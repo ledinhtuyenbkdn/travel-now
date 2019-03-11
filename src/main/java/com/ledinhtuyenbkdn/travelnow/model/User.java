@@ -5,7 +5,7 @@ import org.neo4j.ogm.annotation.Id;
 import org.neo4j.ogm.annotation.NodeEntity;
 
 @NodeEntity
-public abstract class User {
+public class User {
     @Id
     @GeneratedValue
     private Long id;
