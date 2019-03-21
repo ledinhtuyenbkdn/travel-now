@@ -4,6 +4,7 @@ import com.dropbox.core.DbxException;
 import com.dropbox.core.v2.DbxClientV2;
 import com.dropbox.core.v2.files.FileMetadata;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -18,8 +19,8 @@ public class StorageServiceDropboxImpl implements StorageService {
     }
 
     @Override
-    public void store(String fileClientAddress, String filename) {
-        try (InputStream in = new FileInputStream(fileClientAddress)) {
+    public void store(MultipartFile file, String filename) {
+        try (InputStream in = file.getInputStream()) {
             FileMetadata metadata = dbxClientV2.files().uploadBuilder("/" + filename)
                     .uploadAndFinish(in);
         } catch (DbxException e) {

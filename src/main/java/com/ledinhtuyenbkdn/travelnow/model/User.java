@@ -4,15 +4,34 @@ import org.neo4j.ogm.annotation.GeneratedValue;
 import org.neo4j.ogm.annotation.Id;
 import org.neo4j.ogm.annotation.NodeEntity;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Past;
+import javax.validation.constraints.Size;
+
 @NodeEntity
 public class User {
+
     @Id
     @GeneratedValue
     private Long id;
+
+    @NotEmpty
+    @Size(min = 2)
     private String userName;
+
+    @NotEmpty
+    @Size(min = 8)
     private String password;
+
+    @NotEmpty
+    @Size(min = 2)
     private String fullName;
+
+    @NotNull
     private Boolean gender;
+
+    @NotEmpty
     private String birthDate;
 
     public User() {

@@ -1,7 +1,9 @@
 package com.ledinhtuyenbkdn.travelnow.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Set;
 
@@ -9,12 +11,20 @@ import java.util.Set;
 public class Tourist extends User {
     private String nationality;
     private String avatar;
+
+    @JsonIgnore
     @Relationship(type = "RATED_PLACE", direction = Relationship.OUTGOING)
     private Set<Place> ratedPlaces;
+
+    @JsonIgnore
     @Relationship(type = "RATED_TOURGUIDE", direction = Relationship.OUTGOING)
     private Set<Tourguide> ratedTourguides;
+
+    @JsonIgnore
     @Relationship(type = "COMMENTED_PLACE", direction = Relationship.OUTGOING)
     private Set<Place> commentedPlaces;
+
+    @JsonIgnore
     @Relationship(type = "COMMENTED_TOURGUIDE", direction = Relationship.OUTGOING)
     private Set<Tourguide> commentedTourguides;
 

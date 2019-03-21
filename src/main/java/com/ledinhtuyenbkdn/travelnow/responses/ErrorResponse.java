@@ -1,15 +1,17 @@
 package com.ledinhtuyenbkdn.travelnow.responses;
 
+import java.util.Map;
+
 public class ErrorResponse {
     private String status;
-    private String message;
+    private Map<String, String> messages;
 
     public ErrorResponse() {
     }
 
-    public ErrorResponse(String status, String message) {
+    public ErrorResponse(String status, Map<String, String> messages) {
         this.status = status;
-        this.message = message;
+        this.messages = messages;
     }
 
     public String getStatus() {
@@ -20,11 +22,11 @@ public class ErrorResponse {
         this.status = status;
     }
 
-    public String getMessage() {
-        return message;
+    public Map<String, String> getMessages() {
+        return messages;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setMessages(Map<String, String> messages) {
+        this.messages = messages;
     }
 }
