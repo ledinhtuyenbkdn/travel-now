@@ -8,10 +8,13 @@ import com.ledinhtuyenbkdn.travelnow.responses.SuccessfulResponse;
 import com.ledinhtuyenbkdn.travelnow.services.StorageService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 public class TouristController {
@@ -27,21 +30,30 @@ public class TouristController {
     }
 
     @RequestMapping(value = "/tourists", method = RequestMethod.POST)
-    public ResponseEntity createTourist(@RequestBody Tourist tourist) {
+    public ResponseEntity createTourist(@Valid @RequestBody Tourist tourist) {
         if (userRepository.findByUserName(tourist.getUserName()).isPresent()) {
-            return new ResponseEntity(new ErrorResponse("error", "Username has existed."),
+            Map<String, String> errors = new HashMap<>();
+            errors.put("userName", "username has existed");
+            return new ResponseEntity(new ErrorResponse("error", errors),
                     HttpStatus.BAD_REQUEST);
         } else {
-            touristRepository.save(tourist);
-            String fileExt = tourist.getAvatar()
-                    .substring(tourist.getAvatar().lastIndexOf(".") + 1);
-            String fileName = tourist.getId() + "." + fileExt;
-            storageService.store(tourist.getAvatar(),
-                    "avatar/" + fileName);
-            tourist.setAvatar(fileName);
+            tourist.setAvatar("default.jpg");
             touristRepository.save(tourist);
             return new ResponseEntity(new SuccessfulResponse("success", tourist),
                     HttpStatus.OK);
         }
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity handleValidationExceptions(MethodArgumentNotValidException ex) {
+        Map<String, String> errors = new HashMap<>();
+        ex.getBindingResult().getAllErrors().forEach((error) -> {
+            String fieldName = ((FieldError) error).getField();
+            String errorMessage = error.getDefaultMessage();
+            errors.put(fieldName, errorMessage);
+        });
+        return new ResponseEntity(new ErrorResponse("error", errors),
+                HttpStatus.BAD_REQUEST);
     }
 }
