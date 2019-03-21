@@ -1,8 +1,10 @@
 package com.ledinhtuyenbkdn.travelnow.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 
+import javax.validation.constraints.Email;
 import java.util.Set;
 
 @NodeEntity
@@ -11,7 +13,10 @@ public class Tourguide extends User {
     private String avatar;
     private String licenceImage;
     private String phoneNumber;
+    @Email
     private String email;
+
+    @JsonIgnore
     @Relationship(type = "WORKS_AT", direction = Relationship.OUTGOING)
     private Set<Place> places;
 
