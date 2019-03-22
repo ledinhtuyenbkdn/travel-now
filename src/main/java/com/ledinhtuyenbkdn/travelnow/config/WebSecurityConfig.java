@@ -1,5 +1,6 @@
 package com.ledinhtuyenbkdn.travelnow.config;
 
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -11,6 +12,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable();
         http.cors().disable();
 
-        http.authorizeRequests().anyRequest().permitAll();
+        http.authorizeRequests()
+                .antMatchers(HttpMethod.POST, "/tourists").permitAll()
+                .antMatchers(HttpMethod.POST, "/tourguides").permitAll()
+                .antMatchers(HttpMethod.PUT, "/tourists/{touristId}").hasRole("TOURIST")
+                .antMatchers(HttpMethod.PUT, "/tourguides/{tourguideId}").hasRole("TOURGUIDE")
+                .anyRequest().permitAll();
     }
 }
