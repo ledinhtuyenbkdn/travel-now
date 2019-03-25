@@ -3,7 +3,6 @@ package com.ledinhtuyenbkdn.travelnow.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Set;
 
@@ -17,20 +16,11 @@ public class Tourist extends User {
     private Set<Place> ratedPlaces;
 
     @JsonIgnore
-    @Relationship(type = "RATED_TOURGUIDE", direction = Relationship.OUTGOING)
-    private Set<Tourguide> ratedTourguides;
-
-    @JsonIgnore
     @Relationship(type = "COMMENTED_PLACE", direction = Relationship.OUTGOING)
     private Set<Place> commentedPlaces;
 
-    @JsonIgnore
-    @Relationship(type = "COMMENTED_TOURGUIDE", direction = Relationship.OUTGOING)
-    private Set<Tourguide> commentedTourguides;
-
     public Tourist() {
     }
-
 
     public String getNationality() {
         return nationality;
@@ -56,27 +46,11 @@ public class Tourist extends User {
         this.ratedPlaces = ratedPlaces;
     }
 
-    public Set<Tourguide> getRatedTourguides() {
-        return ratedTourguides;
-    }
-
-    public void setRatedTourguides(Set<Tourguide> ratedTourguides) {
-        this.ratedTourguides = ratedTourguides;
-    }
-
     public Set<Place> getCommentedPlaces() {
         return commentedPlaces;
     }
 
     public void setCommentedPlaces(Set<Place> commentedPlaces) {
         this.commentedPlaces = commentedPlaces;
-    }
-
-    public Set<Tourguide> getCommentedTourguides() {
-        return commentedTourguides;
-    }
-
-    public void setCommentedTourguides(Set<Tourguide> commentedTourguides) {
-        this.commentedTourguides = commentedTourguides;
     }
 }

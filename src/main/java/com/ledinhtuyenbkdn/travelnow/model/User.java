@@ -5,7 +5,9 @@ import org.neo4j.ogm.annotation.Id;
 import org.neo4j.ogm.annotation.NodeEntity;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
+import java.time.LocalDate;
 
 @NodeEntity
 public class User {
@@ -27,8 +29,8 @@ public class User {
     private String fullName;
 
     private Boolean gender;
-
-    private String birthDate;
+    @Past
+    private LocalDate birthDate;
 
     public User() {
     }
@@ -74,11 +76,11 @@ public class User {
         this.gender = gender;
     }
 
-    public String getBirthDate() {
+    public LocalDate getBirthDate() {
         return birthDate;
     }
 
-    public void setBirthDate(String birthDate) {
+    public void setBirthDate(LocalDate birthDate) {
         this.birthDate = birthDate;
     }
 }

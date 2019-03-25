@@ -2,13 +2,19 @@ package com.ledinhtuyenbkdn.travelnow.model;
 
 import org.neo4j.ogm.annotation.*;
 
+import javax.validation.constraints.NotEmpty;
+import java.time.LocalDateTime;
+
 @RelationshipEntity(type = "COMMENTED_PLACE")
 public class CommentedPlace {
     @Id
     @GeneratedValue
     private Long id;
+
+    @NotEmpty
     private String content;
-    private String createdDateTime;
+
+    private LocalDateTime createdAt;
     @StartNode
     private Tourist tourist;
     @EndNode
@@ -33,12 +39,12 @@ public class CommentedPlace {
         this.content = content;
     }
 
-    public String getCreatedDateTime() {
-        return createdDateTime;
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
-    public void setCreatedDateTime(String createdDateTime) {
-        this.createdDateTime = createdDateTime;
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 
     public Tourist getTourist() {

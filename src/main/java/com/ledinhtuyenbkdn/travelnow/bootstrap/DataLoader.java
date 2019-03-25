@@ -31,7 +31,6 @@ public class DataLoader implements CommandLineRunner {
         admin.setPassword("secret");
         admin.setFullName("ledinhtuyen");
         admin.setGender(true);
-        admin.setBirthDate("10/01/1997");
 
         adminRepository.save(admin);
         //add province
