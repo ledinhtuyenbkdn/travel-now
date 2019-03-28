@@ -4,17 +4,18 @@ import com.dropbox.core.DbxException;
 import com.dropbox.core.v2.DbxClientV2;
 import com.dropbox.core.v2.files.FileMetadata;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class StorageServiceDropboxImpl implements StorageService {
+@Service
+public class StorageServiceImpl implements StorageService {
     private DbxClientV2 dbxClientV2;
 
     @Autowired
-    public StorageServiceDropboxImpl(DbxClientV2 dbxClientV2) {
+    public StorageServiceImpl(DbxClientV2 dbxClientV2) {
         this.dbxClientV2 = dbxClientV2;
     }
 

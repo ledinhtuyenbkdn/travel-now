@@ -2,8 +2,6 @@ package com.ledinhtuyenbkdn.travelnow.config;
 
 import com.dropbox.core.DbxRequestConfig;
 import com.dropbox.core.v2.DbxClientV2;
-import com.ledinhtuyenbkdn.travelnow.services.StorageService;
-import com.ledinhtuyenbkdn.travelnow.services.StorageServiceDropboxImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -16,10 +14,5 @@ public class DropboxConfig {
         DbxRequestConfig config = DbxRequestConfig.newBuilder("Apps/travel-now").build();
         DbxClientV2 client = new DbxClientV2(config, ACCESS_TOKEN);
         return client;
-    }
-
-    @Bean
-    public StorageService storageServiceDropboxImpl(DbxClientV2 dbxClientV2) {
-        return new StorageServiceDropboxImpl(dbxClientV2);
     }
 }

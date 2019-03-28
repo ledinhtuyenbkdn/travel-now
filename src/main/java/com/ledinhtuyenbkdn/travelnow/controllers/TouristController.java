@@ -8,6 +8,7 @@ import com.ledinhtuyenbkdn.travelnow.responses.SuccessfulResponse;
 import com.ledinhtuyenbkdn.travelnow.services.StorageService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
@@ -19,11 +20,13 @@ import java.util.Map;
 @RestController
 public class TouristController {
 
+    private PasswordEncoder passwordEncoder;
     private UserRepository userRepository;
     private TouristRepository touristRepository;
     private StorageService storageService;
 
-    public TouristController(UserRepository userRepository, TouristRepository touristRepository, StorageService storageService) {
+    public TouristController(PasswordEncoder passwordEncoder, UserRepository userRepository, TouristRepository touristRepository, StorageService storageService) {
+        this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
         this.touristRepository = touristRepository;
         this.storageService = storageService;
@@ -38,10 +41,17 @@ public class TouristController {
                     HttpStatus.BAD_REQUEST);
         } else {
             tourist.setAvatar("default.jpg");
+            tourist.setRole("ROLE_TOURIST");
+            tourist.setPassword(passwordEncoder.encode(tourist.getPassword()));
             touristRepository.save(tourist);
             return new ResponseEntity(new SuccessfulResponse("success", tourist),
                     HttpStatus.OK);
         }
+    }
+
+    @RequestMapping(value = "/tourists", method = RequestMethod.PUT)
+    public String updateTourist() {
+        return "success";
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)

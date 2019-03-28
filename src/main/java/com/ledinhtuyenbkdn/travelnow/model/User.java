@@ -1,5 +1,6 @@
 package com.ledinhtuyenbkdn.travelnow.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.neo4j.ogm.annotation.GeneratedValue;
 import org.neo4j.ogm.annotation.Id;
 import org.neo4j.ogm.annotation.NodeEntity;
@@ -22,6 +23,7 @@ public class User {
 
     @NotEmpty
     @Size(min = 8)
+    @JsonIgnore
     private String password;
 
     @NotEmpty
@@ -31,6 +33,8 @@ public class User {
     private Boolean gender;
     @Past
     private LocalDate birthDate;
+
+    private String role;
 
     public User() {
     }
@@ -82,5 +86,13 @@ public class User {
 
     public void setBirthDate(LocalDate birthDate) {
         this.birthDate = birthDate;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 }
