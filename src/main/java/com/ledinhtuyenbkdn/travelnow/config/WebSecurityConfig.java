@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -21,13 +20,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private UserDetailsService userDetailsService;
-    private JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Autowired
-    public WebSecurityConfig(UserDetailsService userDetailsService,
-                             JwtAuthenticationFilter jwtAuthenticationFilter) {
+    public WebSecurityConfig(UserDetailsService userDetailsService) {
         this.userDetailsService = userDetailsService;
-        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+        ;
     }
 
     @Bean
@@ -36,13 +33,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager() {
+    public JwtLoginFilter jwtLoginFilter() {
         try {
-            return super.authenticationManager();
+            return new JwtLoginFilter(authenticationManager());
         } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
+    }
+
+    @Bean
+    public JwtAuthenticationFilter jwtAuthenticationFilter() {
+        return new JwtAuthenticationFilter();
     }
 
     @Override
@@ -56,9 +58,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, "/admins").hasRole("ADMIN")
                 .anyRequest().permitAll()
                 .and()
-                .addFilterBefore(new JwtLoginFilter(authenticationManager()),
+                .addFilterBefore(jwtLoginFilter(),
                         UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(jwtAuthenticationFilter,
+                .addFilterBefore(jwtAuthenticationFilter(),
                         UsernamePasswordAuthenticationFilter.class);
 
     }

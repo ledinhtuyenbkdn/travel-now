@@ -1,7 +1,7 @@
 package com.ledinhtuyenbkdn.travelnow.filter;
 
 import com.ledinhtuyenbkdn.travelnow.services.TokenAuthenticationService;
-import com.ledinhtuyenbkdn.travelnow.services.TokenAuthenticationServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -15,10 +15,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-
 public class JwtLoginFilter extends AbstractAuthenticationProcessingFilter {
 
-    private TokenAuthenticationService tokenAuthenticationService = new TokenAuthenticationServiceImpl();
+    @Autowired
+    private TokenAuthenticationService tokenAuthenticationService;
 
     public JwtLoginFilter(AuthenticationManager authenticationManager) {
         super(new AntPathRequestMatcher("/login"));
