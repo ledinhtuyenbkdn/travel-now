@@ -1,5 +1,6 @@
 package com.ledinhtuyenbkdn.travelnow.services;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ledinhtuyenbkdn.travelnow.repositories.UserRepository;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -37,7 +38,9 @@ public class TokenAuthenticationServiceImpl implements TokenAuthenticationServic
             PrintWriter writer = response.getWriter();
             response.setContentType("application/json");
             response.addHeader(HEADER_STRING, Jwt);
-            writer.print("smth");
+            ObjectMapper mapper = new ObjectMapper();
+            String json = mapper.writeValueAsString(userRepository.findByUserName(username).get());
+            writer.print(json);
             writer.flush();
         } catch (IOException e) {
             e.printStackTrace();

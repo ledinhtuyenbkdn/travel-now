@@ -1,7 +1,5 @@
 package com.ledinhtuyenbkdn.travelnow.config;
 
-import com.ledinhtuyenbkdn.travelnow.filter.JwtAuthenticationFilter;
-import com.ledinhtuyenbkdn.travelnow.filter.JwtLoginFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

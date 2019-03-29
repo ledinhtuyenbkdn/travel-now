@@ -1,4 +1,4 @@
-package com.ledinhtuyenbkdn.travelnow.filter;
+package com.ledinhtuyenbkdn.travelnow.config;
 
 import com.ledinhtuyenbkdn.travelnow.services.TokenAuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
