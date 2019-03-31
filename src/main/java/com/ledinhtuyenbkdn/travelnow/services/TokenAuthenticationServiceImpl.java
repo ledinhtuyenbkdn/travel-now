@@ -38,6 +38,7 @@ public class TokenAuthenticationServiceImpl implements TokenAuthenticationServic
             PrintWriter writer = response.getWriter();
             response.setContentType("application/json");
             response.addHeader(HEADER_STRING, Jwt);
+
             ObjectMapper mapper = new ObjectMapper();
             String json = mapper.writeValueAsString(userRepository.findByUserName(username).get());
             writer.print(json);

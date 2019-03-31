@@ -1,6 +1,5 @@
 package com.ledinhtuyenbkdn.travelnow.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.neo4j.ogm.annotation.GeneratedValue;
 import org.neo4j.ogm.annotation.Id;
 import org.neo4j.ogm.annotation.NodeEntity;
@@ -23,7 +22,6 @@ public class User {
 
     @NotEmpty
     @Size(min = 8)
-    @JsonIgnore
     private String password;
 
     @NotEmpty
