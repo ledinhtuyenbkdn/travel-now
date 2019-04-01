@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 public class TouristController {
@@ -40,7 +41,7 @@ public class TouristController {
             return new ResponseEntity(new ErrorResponse("error", errors),
                     HttpStatus.BAD_REQUEST);
         } else {
-            tourist.setAvatar("default.jpg");
+            tourist.setAvatar("avatar/default.png");
             tourist.setRole("ROLE_TOURIST");
             tourist.setPassword(passwordEncoder.encode(tourist.getPassword()));
             touristRepository.save(tourist);
@@ -49,10 +50,33 @@ public class TouristController {
         }
     }
 
-    @RequestMapping(value = "/tourists", method = RequestMethod.PUT)
-    public String updateTourist() {
-        return "success";
+    @RequestMapping(value = "/tourists/{id}", method = RequestMethod.GET)
+    public ResponseEntity readTourist(@PathVariable("id") String id) {
+        Optional<Tourist> optionalTourist = touristRepository.findById(Long.parseLong(id));
+
+        if (!optionalTourist.isPresent()) {
+            Map<String, String> errors = new HashMap<>();
+            errors.put("id", "ID is not existed");
+            return new ResponseEntity(new ErrorResponse("error", errors),
+                    HttpStatus.NOT_FOUND);
+        }
+        Tourist tourist = optionalTourist.get();
+        tourist.setUserName(null);
+        tourist.setPassword(null);
+        tourist.setAvatar(storageService.load(tourist.getAvatar()));
+
+        return new ResponseEntity(new SuccessfulResponse("success", tourist),
+                HttpStatus.OK);
     }
+
+//    @RequestMapping(value = "/tourists", method = RequestMethod.PUT)
+//    public String updateTourist(@Valid @RequestBody Tourist tourist,
+//                                Authentication authentication) {
+//        String userName = authentication.getPrincipal().toString();
+//        Tourist currentTourist = touristRepository.findByUserName(userName).get();
+//
+//        return "success";
+//    }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
