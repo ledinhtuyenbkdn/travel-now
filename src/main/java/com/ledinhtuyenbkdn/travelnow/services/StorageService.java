@@ -1,11 +1,9 @@
 package com.ledinhtuyenbkdn.travelnow.services;
 
-import org.springframework.web.multipart.MultipartFile;
-
 public interface StorageService {
-    void store(MultipartFile fileClientAddress, String filename);
+    String store(String base64);
 
-    void delete(String filename);
+    void delete(String fileId);
 
-    String load(String filename);
+    String load(String fileId);
 }
