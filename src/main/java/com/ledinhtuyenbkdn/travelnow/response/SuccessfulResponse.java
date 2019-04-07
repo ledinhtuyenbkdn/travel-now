@@ -1,4 +1,4 @@
-package com.ledinhtuyenbkdn.travelnow.responses;
+package com.ledinhtuyenbkdn.travelnow.response;
 
 public class SuccessfulResponse {
     private String status;

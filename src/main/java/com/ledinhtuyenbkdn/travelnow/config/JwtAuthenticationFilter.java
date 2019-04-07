@@ -1,6 +1,6 @@
 package com.ledinhtuyenbkdn.travelnow.config;
 
-import com.ledinhtuyenbkdn.travelnow.services.TokenAuthenticationService;
+import com.ledinhtuyenbkdn.travelnow.service.TokenAuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;

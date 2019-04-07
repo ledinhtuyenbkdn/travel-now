@@ -1,4 +1,4 @@
-package com.ledinhtuyenbkdn.travelnow.services;
+package com.ledinhtuyenbkdn.travelnow.service;
 
 import org.springframework.security.core.Authentication;
 
