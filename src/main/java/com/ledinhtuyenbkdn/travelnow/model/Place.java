@@ -19,7 +19,7 @@ public class Place {
     private Double latitude;
     private Double longitude;
     @Relationship(type = "HAS_IMAGE", direction = Relationship.OUTGOING)
-    private Set<Photo> photos = new HashSet<>();
+    private Set<Image> images = new HashSet<>();
     @Relationship(type = "IS_IN", direction = Relationship.OUTGOING)
     private Province province;
     @Relationship(type = "IS_BELONGS_TO", direction = Relationship.OUTGOING)
@@ -28,14 +28,14 @@ public class Place {
     public Place() {
     }
 
-    public Place(Long id, String namePlace, String about, String address, Double latitude, Double longitude, Set<Photo> photos, Province province, Category category) {
+    public Place(Long id, String namePlace, String about, String address, Double latitude, Double longitude, Set<Image> images, Province province, Category category) {
         this.id = id;
         this.namePlace = namePlace;
         this.about = about;
         this.address = address;
         this.latitude = latitude;
         this.longitude = longitude;
-        this.photos = photos;
+        this.images = images;
         this.province = province;
         this.category = category;
     }
@@ -88,12 +88,12 @@ public class Place {
         this.longitude = longitude;
     }
 
-    public Set<Photo> getPhotos() {
-        return photos;
+    public Set<Image> getImages() {
+        return images;
     }
 
-    public void setPhotos(Set<Photo> photos) {
-        this.photos = photos;
+    public void setImages(Set<Image> images) {
+        this.images = images;
     }
 
     public Province getProvince() {

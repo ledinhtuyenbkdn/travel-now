@@ -1,8 +1,8 @@
 package com.ledinhtuyenbkdn.travelnow.bootstrap;
 
-import com.ledinhtuyenbkdn.travelnow.repositories.AdminRepository;
-import com.ledinhtuyenbkdn.travelnow.repositories.CategoryRepository;
-import com.ledinhtuyenbkdn.travelnow.repositories.ProvinceRepository;
+import com.ledinhtuyenbkdn.travelnow.repository.AdminRepository;
+import com.ledinhtuyenbkdn.travelnow.repository.CategoryRepository;
+import com.ledinhtuyenbkdn.travelnow.repository.ProvinceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -25,7 +25,8 @@ public class DataLoader implements CommandLineRunner {
 //        //add admin
 //        Admin admin = new Admin();
 //        admin.setUserName("admin");
-//        admin.setPassword("secret");
+//        // pass = secret123
+//        admin.setPassword("$2a$10$f7RMh3epXApK615P84.VpO.ElgRgkBXwba1rph974t6ur6QfAtGZG");
 //        admin.setFullName("ledinhtuyen");
 //        admin.setBirthDate(LocalDate.now());
 //        admin.setGender(true);

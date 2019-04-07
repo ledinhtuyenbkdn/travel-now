@@ -1,4 +1,4 @@
-package com.ledinhtuyenbkdn.travelnow.services;
+package com.ledinhtuyenbkdn.travelnow.service;
 
 public interface StorageService {
     String store(String base64);

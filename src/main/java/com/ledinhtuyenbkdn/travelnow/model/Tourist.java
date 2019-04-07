@@ -9,7 +9,9 @@ import java.util.Set;
 @NodeEntity
 public class Tourist extends User {
     private String nationality;
-    private String avatar;
+
+    @Relationship(type = "HAS_IMAGE", direction = Relationship.OUTGOING)
+    private Image image;
 
     @JsonIgnore
     @Relationship(type = "RATED_PLACE", direction = Relationship.OUTGOING)
@@ -30,12 +32,12 @@ public class Tourist extends User {
         this.nationality = nationality;
     }
 
-    public String getAvatar() {
-        return avatar;
+    public Image getImage() {
+        return image;
     }
 
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
+    public void setImage(Image image) {
+        this.image = image;
     }
 
     public Set<Place> getRatedPlaces() {

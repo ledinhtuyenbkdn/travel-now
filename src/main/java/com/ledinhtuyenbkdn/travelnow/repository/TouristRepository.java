@@ -1,4 +1,4 @@
-package com.ledinhtuyenbkdn.travelnow.repositories;
+package com.ledinhtuyenbkdn.travelnow.repository;
 
 import com.ledinhtuyenbkdn.travelnow.model.Tourist;
 import org.springframework.data.neo4j.repository.Neo4jRepository;

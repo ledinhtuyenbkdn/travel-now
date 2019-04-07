@@ -1,7 +1,10 @@
-package com.ledinhtuyenbkdn.travelnow.services;
+package com.ledinhtuyenbkdn.travelnow.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ledinhtuyenbkdn.travelnow.repositories.UserRepository;
+import com.ledinhtuyenbkdn.travelnow.model.Tourist;
+import com.ledinhtuyenbkdn.travelnow.repository.AdminRepository;
+import com.ledinhtuyenbkdn.travelnow.repository.TouristRepository;
+import com.ledinhtuyenbkdn.travelnow.repository.UserRepository;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +31,15 @@ public class TokenAuthenticationServiceImpl implements TokenAuthenticationServic
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private TouristRepository touristRepository;
+
+    @Autowired
+    private AdminRepository adminRepository;
+
+    @Autowired
+    private StorageService storageService;
+
     public void addAuthentication(HttpServletResponse response, String username) {
         String Jwt = Jwts.builder()
                 .setSubject(username)
@@ -38,9 +50,16 @@ public class TokenAuthenticationServiceImpl implements TokenAuthenticationServic
             PrintWriter writer = response.getWriter();
             response.setContentType("application/json");
             response.addHeader(HEADER_STRING, Jwt);
-
             ObjectMapper mapper = new ObjectMapper();
-            String json = mapper.writeValueAsString(userRepository.findByUserName(username).get());
+            String json = "";
+            if (userRepository.findByUserName(username).get().getRole().equals("ROLE_TOURIST")) {
+                Tourist tourist = touristRepository.findByUserName(username).get();
+                tourist.getImage().setUrl(storageService.load(tourist.getImage().getUrl()));
+                json = mapper.writeValueAsString(tourist);
+            } else {
+                json = mapper.writeValueAsString(adminRepository.findByUserName(username).get());
+            }
+
             writer.print(json);
             writer.flush();
         } catch (IOException e) {

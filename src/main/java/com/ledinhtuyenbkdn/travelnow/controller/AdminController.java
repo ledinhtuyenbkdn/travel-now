@@ -1,4 +1,4 @@
-package com.ledinhtuyenbkdn.travelnow.controllers;
+package com.ledinhtuyenbkdn.travelnow.controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;

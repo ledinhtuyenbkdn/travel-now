@@ -1,7 +1,7 @@
-package com.ledinhtuyenbkdn.travelnow.services;
+package com.ledinhtuyenbkdn.travelnow.service;
 
 import com.ledinhtuyenbkdn.travelnow.model.User;
-import com.ledinhtuyenbkdn.travelnow.repositories.UserRepository;
+import com.ledinhtuyenbkdn.travelnow.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

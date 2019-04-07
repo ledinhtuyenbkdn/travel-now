@@ -5,18 +5,18 @@ import org.neo4j.ogm.annotation.Id;
 import org.neo4j.ogm.annotation.NodeEntity;
 
 @NodeEntity
-public class Photo {
+public class Image {
     @Id
     @GeneratedValue
     private Long id;
-    private String urlImage;
+    private String url;
 
-    public Photo() {
+    public Image() {
     }
 
-    public Photo(Long id, String urlImage) {
+    public Image(Long id, String url) {
         this.id = id;
-        this.urlImage = urlImage;
+        this.url = url;
     }
 
     public Long getId() {
@@ -27,11 +27,11 @@ public class Photo {
         this.id = id;
     }
 
-    public String getUrlImage() {
-        return urlImage;
+    public String getUrl() {
+        return url;
     }
 
-    public void setUrlImage(String urlImage) {
-        this.urlImage = urlImage;
+    public void setUrl(String url) {
+        this.url = url;
     }
 }

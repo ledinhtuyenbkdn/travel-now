@@ -1,11 +1,13 @@
-package com.ledinhtuyenbkdn.travelnow.controllers;
+package com.ledinhtuyenbkdn.travelnow.controller;
 
+import com.ledinhtuyenbkdn.travelnow.model.Image;
 import com.ledinhtuyenbkdn.travelnow.model.Tourist;
-import com.ledinhtuyenbkdn.travelnow.repositories.TouristRepository;
-import com.ledinhtuyenbkdn.travelnow.repositories.UserRepository;
-import com.ledinhtuyenbkdn.travelnow.responses.ErrorResponse;
-import com.ledinhtuyenbkdn.travelnow.responses.SuccessfulResponse;
-import com.ledinhtuyenbkdn.travelnow.services.StorageService;
+import com.ledinhtuyenbkdn.travelnow.repository.ImageRepository;
+import com.ledinhtuyenbkdn.travelnow.repository.TouristRepository;
+import com.ledinhtuyenbkdn.travelnow.repository.UserRepository;
+import com.ledinhtuyenbkdn.travelnow.response.ErrorResponse;
+import com.ledinhtuyenbkdn.travelnow.response.SuccessfulResponse;
+import com.ledinhtuyenbkdn.travelnow.service.StorageService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -25,12 +27,18 @@ public class TouristController {
     private PasswordEncoder passwordEncoder;
     private UserRepository userRepository;
     private TouristRepository touristRepository;
+    private ImageRepository imageRepository;
     private StorageService storageService;
 
-    public TouristController(PasswordEncoder passwordEncoder, UserRepository userRepository, TouristRepository touristRepository, StorageService storageService) {
+    public TouristController(PasswordEncoder passwordEncoder,
+                             UserRepository userRepository,
+                             TouristRepository touristRepository,
+                             ImageRepository imageRepository,
+                             StorageService storageService) {
         this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
         this.touristRepository = touristRepository;
+        this.imageRepository = imageRepository;
         this.storageService = storageService;
     }
 
@@ -42,7 +50,11 @@ public class TouristController {
             return new ResponseEntity(new ErrorResponse("error", errors),
                     HttpStatus.BAD_REQUEST);
         } else {
-            tourist.setAvatar("avatar/default.png");
+            //set default image avatar
+            Image image = new Image();
+            image.setUrl("default");
+            tourist.setImage(image);
+
             tourist.setRole("ROLE_TOURIST");
             tourist.setPassword(passwordEncoder.encode(tourist.getPassword()));
             touristRepository.save(tourist);
@@ -52,9 +64,9 @@ public class TouristController {
     }
 
     @RequestMapping(value = "/tourists/{id}", method = RequestMethod.GET)
-    public ResponseEntity readTourist(@PathVariable("id") String id) {
-        Optional<Tourist> optionalTourist = touristRepository.findById(Long.parseLong(id));
-
+    public ResponseEntity readTourist(@PathVariable("id") Long id) {
+        Optional<Tourist> optionalTourist = touristRepository.findById(id);
+        //check valid id tourist
         if (!optionalTourist.isPresent()) {
             Map<String, String> errors = new HashMap<>();
             errors.put("id", "ID is not existed");
@@ -64,18 +76,22 @@ public class TouristController {
         Tourist tourist = optionalTourist.get();
         tourist.setUserName(null);
         tourist.setPassword(null);
-        tourist.setAvatar(storageService.load(tourist.getAvatar()));
+
+        Image image = new Image();
+        image.setId(tourist.getImage().getId());
+        image.setUrl(storageService.load(tourist.getImage().getUrl()));
+        tourist.setImage(image);
 
         return new ResponseEntity(new SuccessfulResponse("success", tourist),
                 HttpStatus.OK);
     }
 
     @RequestMapping(value = "/tourists/{id}", method = RequestMethod.PUT)
-    public ResponseEntity updateTourist(@PathVariable("id") String id,
+    public ResponseEntity updateTourist(@PathVariable("id") Long id,
                                         @Valid @RequestBody Tourist tourist,
                                         Authentication authentication) {
-        Optional<Tourist> optionalTourist = touristRepository.findById(Long.parseLong(id));
-
+        Optional<Tourist> optionalTourist = touristRepository.findById(id);
+        //check valid id tourist
         if (!optionalTourist.isPresent()) {
             Map<String, String> errors = new HashMap<>();
             errors.put("id", "ID is not existed");
@@ -91,6 +107,39 @@ public class TouristController {
             currentTourist.setNationality(tourist.getNationality());
             touristRepository.save(currentTourist);
 
+            return new ResponseEntity(new SuccessfulResponse("success", currentTourist),
+                    HttpStatus.OK);
+        } else {
+            Map<String, String> errors = new HashMap<>();
+            errors.put("authorization", "you aren't allowed to update this tourist.");
+            return new ResponseEntity(new ErrorResponse("error", errors),
+                    HttpStatus.FORBIDDEN);
+        }
+    }
+
+    @RequestMapping(value = "/tourists/{id}/avatar", method = RequestMethod.PUT)
+    public ResponseEntity updateAvatar(@PathVariable("id") Long id,
+                                       @RequestBody Image image,
+                                       Authentication authentication) {
+        Optional<Tourist> optionalTourist = touristRepository.findById(id);
+        //check valid id tourist
+        if (!optionalTourist.isPresent()) {
+            Map<String, String> errors = new HashMap<>();
+            errors.put("id", "ID is not existed");
+            return new ResponseEntity(new ErrorResponse("error", errors),
+                    HttpStatus.NOT_FOUND);
+        }
+        Tourist currentTourist = optionalTourist.get();
+        if (authentication.getPrincipal().toString().equals(currentTourist.getUserName())) {
+            Image currentImage = currentTourist.getImage();
+            if (!currentImage.getUrl().equals("default")) {
+                storageService.delete(currentImage.getUrl());
+            }
+            String newImageUrl = storageService.store(image.getUrl());
+            currentImage.setUrl(newImageUrl);
+            imageRepository.save(currentImage);
+
+            currentImage.setUrl(storageService.load(newImageUrl));
             return new ResponseEntity(new SuccessfulResponse("success", currentTourist),
                     HttpStatus.OK);
         } else {

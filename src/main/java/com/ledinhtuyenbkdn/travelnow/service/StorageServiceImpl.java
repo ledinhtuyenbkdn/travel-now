@@ -1,4 +1,4 @@
-package com.ledinhtuyenbkdn.travelnow.services;
+package com.ledinhtuyenbkdn.travelnow.service;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;

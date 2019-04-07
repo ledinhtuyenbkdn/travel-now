@@ -1,4 +1,4 @@
-package com.ledinhtuyenbkdn.travelnow.responses;
+package com.ledinhtuyenbkdn.travelnow.response;
 
 import java.util.Map;
 
