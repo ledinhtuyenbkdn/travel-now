@@ -14,6 +14,10 @@ public class Image {
     public Image() {
     }
 
+    public Image(String url) {
+        this.url = url;
+    }
+
     public Image(Long id, String url) {
         this.id = id;
         this.url = url;

@@ -7,10 +7,7 @@ import com.ledinhtuyenbkdn.travelnow.response.SuccessfulResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
@@ -22,13 +19,13 @@ public class CategoryController {
         this.categoryRepository = categoryRepository;
     }
 
-    @RequestMapping(value = "/categories", method = RequestMethod.POST)
+    @PostMapping("/categories")
     public ResponseEntity createCategory(@RequestBody Category category) {
         categoryRepository.save(category);
         return new ResponseEntity(new SuccessfulResponse("success", category), HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/categories/{id}", method = RequestMethod.PUT)
+    @PutMapping("/categories/{id}")
     public ResponseEntity updateCategory(@PathVariable("id") Long id, @RequestBody Category category) {
         Optional<Category> optionalCategory = categoryRepository.findById(id);
         if (!optionalCategory.isPresent()) {
@@ -43,7 +40,7 @@ public class CategoryController {
         return new ResponseEntity(new SuccessfulResponse("success", currentCategory), HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/categories", method = RequestMethod.GET)
+    @GetMapping("/categories")
     public ResponseEntity readAllCategories() {
         List<Category> categories = new ArrayList<>();
         Iterable<Category> categoryIterable = categoryRepository.findAll();
@@ -53,7 +50,7 @@ public class CategoryController {
         return new ResponseEntity(new SuccessfulResponse("success", categories), HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/categories/{id}", method = RequestMethod.DELETE)
+    @DeleteMapping("/categories/{id}")
     public ResponseEntity deleteCategory(@PathVariable("id") Long id) {
         Optional<Category> optionalCategory = categoryRepository.findById(id);
         if (!optionalCategory.isPresent()) {

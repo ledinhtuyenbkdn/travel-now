@@ -5,6 +5,7 @@ import org.neo4j.ogm.annotation.Id;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 
+import javax.validation.constraints.NotBlank;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -13,8 +14,12 @@ public class Place {
     @Id
     @GeneratedValue
     private Long id;
+
+    @NotBlank
     private String namePlace;
     private String about;
+
+    @NotBlank
     private String address;
     private Double latitude;
     private Double longitude;

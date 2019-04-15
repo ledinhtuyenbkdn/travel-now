@@ -7,10 +7,7 @@ import com.ledinhtuyenbkdn.travelnow.response.SuccessfulResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
@@ -22,13 +19,13 @@ public class ProvinceController {
         this.provinceRepository = provinceRepository;
     }
 
-    @RequestMapping(value = "/provinces", method = RequestMethod.POST)
+    @PostMapping("/provinces")
     public ResponseEntity createProvince(@RequestBody Province province) {
         provinceRepository.save(province);
         return new ResponseEntity(new SuccessfulResponse("success", province), HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/provinces/{id}", method = RequestMethod.PUT)
+    @PutMapping("/provinces/{id}")
     public ResponseEntity updateProvince(@PathVariable("id") Long id, @RequestBody Province province) {
         Optional<Province> optionalProvince = provinceRepository.findById(id);
         if (!optionalProvince.isPresent()) {
@@ -43,7 +40,7 @@ public class ProvinceController {
         return new ResponseEntity(new SuccessfulResponse("success", currentProvince), HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/provinces", method = RequestMethod.GET)
+    @GetMapping("/provinces")
     public ResponseEntity readAllProvinces() {
         List<Province> provinces = new ArrayList<>();
         Iterable<Province> provinceIterable = provinceRepository.findAll();
@@ -53,7 +50,7 @@ public class ProvinceController {
         return new ResponseEntity(new SuccessfulResponse("success", provinces), HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/provinces/{id}", method = RequestMethod.DELETE)
+    @DeleteMapping("/provinces/{id}")
     public ResponseEntity deleteProvince(@PathVariable("id") Long id) {
         Optional<Province> optionalProvince = provinceRepository.findById(id);
         if (!optionalProvince.isPresent()) {
