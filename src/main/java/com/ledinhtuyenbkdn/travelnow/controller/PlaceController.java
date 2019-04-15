@@ -75,6 +75,21 @@ public class PlaceController {
         return new ResponseEntity(new ErrorResponse("error", errors), HttpStatus.BAD_REQUEST);
     }
 
+    @GetMapping("/places/{id}")
+    public ResponseEntity readPlace(@PathVariable("id") Long id) {
+        Optional<Place> optionalPlace = placeRepository.findById(id);
+        if (!optionalPlace.isPresent()) {
+            Map<String, String> errors = new HashMap<>();
+            errors.put("id", "ID is not existed");
+            return new ResponseEntity(new ErrorResponse("error", errors),
+                    HttpStatus.NOT_FOUND);
+        }
+        Place place = optionalPlace.get();
+        for (Image image : place.getImages()) {
+            image.setUrl(storageService.load(image.getUrl()));
+        }
+        return new ResponseEntity(new SuccessfulResponse("success", place), HttpStatus.OK);
+    }
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity handleValidationExceptions(MethodArgumentNotValidException ex) {
