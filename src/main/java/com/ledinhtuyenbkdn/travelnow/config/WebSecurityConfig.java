@@ -81,6 +81,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.PUT, "/provinces/{id}").hasRole("ADMIN")
                 .antMatchers(HttpMethod.DELETE, "/provinces/{id}").hasRole("ADMIN")
                 .antMatchers(HttpMethod.POST, "/places").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET, "/places/{id}").permitAll()
                 .anyRequest().permitAll()
                 .and()
                 .addFilterBefore(jwtLoginFilter(),
