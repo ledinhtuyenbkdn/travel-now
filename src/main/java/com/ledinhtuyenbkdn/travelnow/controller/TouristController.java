@@ -42,7 +42,7 @@ public class TouristController {
         this.storageService = storageService;
     }
 
-    @RequestMapping(value = "/tourists", method = RequestMethod.POST)
+    @PostMapping("/tourists")
     public ResponseEntity createTourist(@Valid @RequestBody Tourist tourist) {
         if (userRepository.findByUserName(tourist.getUserName()).isPresent()) {
             Map<String, String> errors = new HashMap<>();
@@ -63,7 +63,7 @@ public class TouristController {
         }
     }
 
-    @RequestMapping(value = "/tourists/{id}", method = RequestMethod.GET)
+    @GetMapping("/tourists/{id}")
     public ResponseEntity readTourist(@PathVariable("id") Long id) {
         Optional<Tourist> optionalTourist = touristRepository.findById(id);
         //check valid id tourist
@@ -86,7 +86,7 @@ public class TouristController {
                 HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/tourists/{id}", method = RequestMethod.PUT)
+    @PutMapping("/tourists/{id}")
     public ResponseEntity updateTourist(@PathVariable("id") Long id,
                                         @Valid @RequestBody Tourist tourist,
                                         Authentication authentication) {
@@ -117,7 +117,7 @@ public class TouristController {
         }
     }
 
-    @RequestMapping(value = "/tourists/{id}/avatar", method = RequestMethod.PUT)
+    @PutMapping("/tourists/{id}/avatar")
     public ResponseEntity updateAvatar(@PathVariable("id") Long id,
                                        @RequestBody Image image,
                                        Authentication authentication) {
