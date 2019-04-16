@@ -80,7 +80,7 @@ public class PlaceController {
         Optional<Place> optionalPlace = placeRepository.findById(id);
         if (!optionalPlace.isPresent()) {
             Map<String, String> errors = new HashMap<>();
-            errors.put("id", "ID is not existed");
+            errors.put("id", "id is not existed");
             return new ResponseEntity(new ErrorResponse("error", errors),
                     HttpStatus.NOT_FOUND);
         }
@@ -90,6 +90,43 @@ public class PlaceController {
         }
         return new ResponseEntity(new SuccessfulResponse("success", place), HttpStatus.OK);
     }
+
+    @PutMapping("/places/{id}")
+    public ResponseEntity updatePlace(@PathVariable("id") Long id, @RequestBody PlaceDTO placeDTO) {
+        Optional<Province> optionalProvince = provinceRepository.findById(Long.valueOf(placeDTO.getProvinceId()));
+        Optional<Category> optionalCategory = categoryRepository.findById(Long.valueOf(placeDTO.getCategoryId()));
+        Optional<Place> optionalPlace = placeRepository.findById(id);
+
+        if (!optionalPlace.isPresent() || !optionalCategory.isPresent() || !optionalProvince.isPresent()) {
+            Map<String, String> errors = new HashMap<>();
+            if (!optionalPlace.isPresent()) {
+                errors.put("id", "id is not exist");
+            }
+            if (!optionalCategory.isPresent()) {
+                errors.put("category", "id is not exist");
+            }
+            if (!optionalProvince.isPresent()) {
+                errors.put("province", "id is not exist");
+            }
+            return new ResponseEntity(new ErrorResponse("error", errors),
+                    HttpStatus.NOT_FOUND);
+        }
+        Place place = optionalPlace.get();
+        place.setNamePlace(placeDTO.getNamePlace());
+        place.setAbout(placeDTO.getAbout());
+        place.setAddress(placeDTO.getAddress());
+        place.setLatitude(placeDTO.getLatitude());
+        place.setLongitude(placeDTO.getLongitude());
+        place.setProvince(optionalProvince.get());
+        place.setCategory(optionalCategory.get());
+        placeRepository.save(place);
+
+        for (Image image : place.getImages()) {
+            image.setUrl(storageService.load(image.getUrl()));
+        }
+        return new ResponseEntity(new SuccessfulResponse("success", place), HttpStatus.OK);
+    }
+
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity handleValidationExceptions(MethodArgumentNotValidException ex) {
