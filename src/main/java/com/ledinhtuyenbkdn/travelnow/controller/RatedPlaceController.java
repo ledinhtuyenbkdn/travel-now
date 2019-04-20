@@ -12,8 +12,11 @@ import com.ledinhtuyenbkdn.travelnow.response.SuccessfulResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.*;
 
 @RestController
@@ -32,7 +35,7 @@ public class RatedPlaceController {
 
     @PostMapping("/places/{idPlace}/rates")
     public ResponseEntity createRatePlace(@PathVariable("idPlace") Long idPlace,
-                                          @RequestBody RatedPlace ratedPlace,
+                                          @Valid @RequestBody RatedPlace ratedPlace,
                                           Authentication authentication) {
         Optional<Place> optionalPlace = placeRepository.findById(idPlace);
         if (!optionalPlace.isPresent()) {
@@ -116,5 +119,18 @@ public class RatedPlaceController {
             return new ResponseEntity(new ErrorResponse("error", errors),
                     HttpStatus.FORBIDDEN);
         }
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity handleValidationExceptions(MethodArgumentNotValidException ex) {
+        Map<String, String> errors = new HashMap<>();
+        ex.getBindingResult().getAllErrors().forEach((error) -> {
+            String fieldName = ((FieldError) error).getField();
+            String errorMessage = error.getDefaultMessage();
+            errors.put(fieldName, errorMessage);
+        });
+        return new ResponseEntity(new ErrorResponse("error", errors),
+                HttpStatus.BAD_REQUEST);
     }
 }
