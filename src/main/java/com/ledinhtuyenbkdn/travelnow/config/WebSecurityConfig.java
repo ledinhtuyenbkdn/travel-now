@@ -86,11 +86,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, "/places").hasRole("ADMIN")
                 .antMatchers(HttpMethod.GET, "/places/{id}").permitAll()
                 .antMatchers(HttpMethod.PUT, "/places/{id}").hasRole("ADMIN")
+                .antMatchers(HttpMethod.DELETE, "/places/{id}").hasRole("ADMIN")
                 //Comment place crud
                 .antMatchers(HttpMethod.POST, "/places/{idPlace}/comments").hasRole("TOURIST")
                 .antMatchers(HttpMethod.GET, "/places/{idPlace}/comments").permitAll()
                 .antMatchers(HttpMethod.PUT, "/places/{idPlace}/comments/{idComment}").hasRole("TOURIST")
                 .antMatchers(HttpMethod.DELETE, "/places/{idPlace}/comments/{idComment}").hasRole("TOURIST")
+                //Rate place crud
+                .antMatchers(HttpMethod.POST, "/places/{idPlace}/rates").hasRole("TOURIST")
+                .antMatchers(HttpMethod.GET, "/places/{idPlace}/rates").permitAll()
+                .antMatchers(HttpMethod.PUT, "/places/{idPlace}/rates/{idRate}").hasRole("TOURIST")
+                .antMatchers(HttpMethod.DELETE, "/places/{idPlace}/rates/{idRate}").hasRole("TOURIST")
                 .anyRequest().permitAll()
                 .and()
                 .addFilterBefore(jwtLoginFilter(),

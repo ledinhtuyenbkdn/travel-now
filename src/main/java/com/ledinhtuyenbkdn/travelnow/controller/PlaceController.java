@@ -127,6 +127,28 @@ public class PlaceController {
         return new ResponseEntity(new SuccessfulResponse("success", place), HttpStatus.OK);
     }
 
+    @DeleteMapping("/places/{id}")
+    public ResponseEntity deletePlace(@PathVariable("id") Long id) {
+        Optional<Place> optionalPlace = placeRepository.findById(id);
+        if (!optionalPlace.isPresent()) {
+            Map<String, String> errors = new HashMap<>();
+            errors.put("id", "id is not existed");
+            return new ResponseEntity(new ErrorResponse("error", errors),
+                    HttpStatus.NOT_FOUND);
+        }
+        Place place = optionalPlace.get();
+        for (Image image : place.getImages()) {
+            storageService.delete(image.getUrl());
+            imageRepository.delete(image);
+        }
+
+        placeRepository.delete(place);
+
+        Map<String, String> messages = new HashMap<>();
+        messages.put("delete", "delete successfully");
+        return new ResponseEntity(new SuccessfulResponse("success", messages), HttpStatus.OK);
+    }
+
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity handleValidationExceptions(MethodArgumentNotValidException ex) {
