@@ -2,11 +2,15 @@ package com.ledinhtuyenbkdn.travelnow.model;
 
 import org.neo4j.ogm.annotation.*;
 
+import javax.validation.constraints.Size;
+
 @RelationshipEntity(type = "RATED_PLACE")
 public class RatedPlace {
     @Id
     @GeneratedValue
     private Long id;
+
+    @Size(min = 1, max = 5)
     private Integer numberStar;
     @StartNode
     private Tourist tourist;

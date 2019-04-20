@@ -1,5 +1,6 @@
 package com.ledinhtuyenbkdn.travelnow.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.neo4j.ogm.annotation.*;
 
 import javax.validation.constraints.NotEmpty;
@@ -18,6 +19,7 @@ public class CommentedPlace {
     @StartNode
     private Tourist tourist;
     @EndNode
+    @JsonIgnore
     private Place place;
 
     public CommentedPlace() {
