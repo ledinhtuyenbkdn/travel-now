@@ -116,7 +116,7 @@ public class CommentedPlaceController {
     }
 
     @DeleteMapping("/places/{idPlace}/comments/{idComment}")
-    public ResponseEntity updateCommentPlace(@PathVariable("idComment") Long idCmt,
+    public ResponseEntity deleteCommentPlace(@PathVariable("idComment") Long idCmt,
                                              Authentication authentication) {
         Optional<CommentedPlace> optionalCommentedPlace = commentedPlaceRepository.findById(idCmt);
         if (!optionalCommentedPlace.isPresent()) {

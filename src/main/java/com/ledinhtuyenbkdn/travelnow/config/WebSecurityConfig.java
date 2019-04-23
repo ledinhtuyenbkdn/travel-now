@@ -94,11 +94,20 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, "/places/{idPlace}/comments").permitAll()
                 .antMatchers(HttpMethod.PUT, "/places/{idPlace}/comments/{idComment}").hasRole("TOURIST")
                 .antMatchers(HttpMethod.DELETE, "/places/{idPlace}/comments/{idComment}").hasRole("TOURIST")
-                //Rate place crud
-                .antMatchers(HttpMethod.POST, "/places/{idPlace}/rates").hasRole("TOURIST")
-                .antMatchers(HttpMethod.GET, "/places/{idPlace}/rates").permitAll()
-                .antMatchers(HttpMethod.PUT, "/places/{idPlace}/rates/{idRate}").hasRole("TOURIST")
-                .antMatchers(HttpMethod.DELETE, "/places/{idPlace}/rates/{idRate}").hasRole("TOURIST")
+                //Post crud
+                .antMatchers(HttpMethod.POST, "/tourists/{touristId}/posts").hasRole("TOURIST")
+                .antMatchers(HttpMethod.GET, "/tourists/{touristId}/posts/{postId}").permitAll()
+                .antMatchers(HttpMethod.PUT, "/tourists/{touristId}/posts/{postId}").hasRole("TOURIST")
+                .antMatchers(HttpMethod.DELETE, "/tourists/{touristId}/posts/{postId}").hasRole("TOURIST")
+                //Like crud
+                .antMatchers(HttpMethod.POST, "/tourists/{touristId}/posts/{postId}/likes").hasRole("TOURIST")
+                .antMatchers(HttpMethod.GET, "/tourists/{touristId}/posts/{postId}/likes").permitAll()
+                .antMatchers(HttpMethod.DELETE, "/tourists/{touristId}/posts/{postId}/likes/{likeId}").hasRole("TOURIST")
+                //Comment post crud
+                .antMatchers(HttpMethod.POST, "/tourists/{touristId}/posts/{postId}/comments").hasRole("TOURIST")
+                .antMatchers(HttpMethod.GET, "/tourists/{touristId}/posts/{postId}/comments").permitAll()
+                .antMatchers(HttpMethod.PUT, "/tourists/{touristId}/posts/{postId}/comments/{idComment}").hasRole("TOURIST")
+                .antMatchers(HttpMethod.DELETE, "/tourists/{touristId}/posts/{postId}/comments/{idComment}").hasRole("TOURIST")
                 .anyRequest().permitAll()
                 .and()
                 .addFilterBefore(jwtLoginFilter(),

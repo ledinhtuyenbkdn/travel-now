@@ -14,6 +14,10 @@ public class Tourist extends User {
     private Image image;
 
     @JsonIgnore
+    @Relationship(type = "HAS_POST", direction = Relationship.OUTGOING)
+    private Set<Post> posts;
+
+    @JsonIgnore
     @Relationship(type = "RATED_PLACE", direction = Relationship.OUTGOING)
     private Set<Place> ratedPlaces;
 
@@ -54,5 +58,13 @@ public class Tourist extends User {
 
     public void setCommentedPlaces(Set<Place> commentedPlaces) {
         this.commentedPlaces = commentedPlaces;
+    }
+
+    public Set<Post> getPosts() {
+        return posts;
+    }
+
+    public void setPosts(Set<Post> posts) {
+        this.posts = posts;
     }
 }
