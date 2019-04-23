@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -73,6 +74,17 @@ public class PlaceController {
             }
         }
         return new ResponseEntity(new ErrorResponse("error", errors), HttpStatus.BAD_REQUEST);
+    }
+
+    @GetMapping("/places")
+    public ResponseEntity getAllPlaces(@RequestParam(value = "s", defaultValue = "") String keyword) {
+        List<Place> places = placeRepository.findAllByNamePlaceContains(keyword);
+        for (Place place : places) {
+            for (Image image : place.getImages()) {
+                image.setUrl(storageService.load(image.getUrl()));
+            }
+        }
+        return ResponseEntity.ok(places);
     }
 
     @GetMapping("/places/{id}")

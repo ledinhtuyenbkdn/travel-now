@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -84,6 +85,17 @@ public class TouristController {
 
         return new ResponseEntity(new SuccessfulResponse("success", tourist),
                 HttpStatus.OK);
+    }
+
+    @GetMapping("/tourists")
+    public ResponseEntity getAllTourist(@RequestParam(value = "s", defaultValue = "") String keyword) {
+        List<Tourist> tourists = touristRepository.findAllByFullNameContains(keyword);
+        for (Tourist tourist : tourists) {
+            tourist.setUserName(null);
+            tourist.setPassword(null);
+            tourist.getImage().setUrl(storageService.load(tourist.getImage().getUrl()));
+        }
+        return ResponseEntity.ok(tourists);
     }
 
     @PutMapping("/tourists/{id}")
