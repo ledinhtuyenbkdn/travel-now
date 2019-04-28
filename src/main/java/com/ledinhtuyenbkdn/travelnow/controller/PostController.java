@@ -57,8 +57,8 @@ public class PostController {
         post.setPlace(place);
 
         for (String image : postDTO.getImages()) {
-            String fileId = storageService.store(image);
-            post.getImages().add(new Image(fileId));
+            String imageUrl = storageService.store(image);
+            post.getImages().add(new Image(imageUrl));
         }
         postRepository.save(post);
         if (tourist.getPosts() == null) {
@@ -66,10 +66,6 @@ public class PostController {
         }
         tourist.getPosts().add(post);
         touristRepository.save(tourist);
-
-        for (Image image : post.getImages()) {
-            image.setUrl(storageService.load(image.getUrl()));
-        }
 
         Map<String, Object> json = new LinkedHashMap<>();
         json.put("id", post.getId());
@@ -91,9 +87,6 @@ public class PostController {
                     HttpStatus.NOT_FOUND);
         }
         Post post = optionalPost.get();
-        for (Image image : post.getImages()) {
-            image.setUrl(storageService.load(image.getUrl()));
-        }
 
         Map<String, Object> json = new LinkedHashMap<>();
         json.put("id", post.getId());
@@ -123,9 +116,6 @@ public class PostController {
         Post post = optionalPost.get();
         post.setContent(postDTO.getContent());
         postRepository.save(post);
-        for (Image image : post.getImages()) {
-            image.setUrl(storageService.load(image.getUrl()));
-        }
 
         Map<String, Object> json = new LinkedHashMap<>();
         json.put("id", post.getId());

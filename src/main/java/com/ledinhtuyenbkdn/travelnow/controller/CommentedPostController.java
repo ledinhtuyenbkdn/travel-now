@@ -50,13 +50,7 @@ public class CommentedPostController {
         commentedPost.setTourist(tourist);
         commentedPost.setPost(post);
         commentedPostRepository.save(commentedPost);
-        //convert to DTO
-        CommentDTO commentDTO = new CommentDTO();
-        commentDTO.setId(commentedPost.getId());
-        commentDTO.setContent(commentedPost.getContent());
-        commentDTO.setCreatedAt(commentedPost.getCreatedAt());
-        commentDTO.setTouristId(commentedPost.getTourist().getId());
-        return new ResponseEntity(new SuccessfulResponse("success", commentDTO), HttpStatus.OK);
+        return new ResponseEntity(new SuccessfulResponse("success", commentedPost), HttpStatus.OK);
     }
 
     @GetMapping("/tourists/{touristId}/posts/{postId}/comments")
@@ -70,16 +64,8 @@ public class CommentedPostController {
         }
         Post post = optionalPost.get();
         List<CommentedPost> allCmts = commentedPostRepository.findByPostId(post.getId());
-        List<CommentDTO> allCmtDTO = new ArrayList<>();
-        for (CommentedPost cmt : allCmts) {
-            CommentDTO commentDTO = new CommentDTO();
-            commentDTO.setId(cmt.getId());
-            commentDTO.setContent(cmt.getContent());
-            commentDTO.setCreatedAt(cmt.getCreatedAt());
-            commentDTO.setTouristId(cmt.getTourist().getId());
-            allCmtDTO.add(commentDTO);
-        }
-        return new ResponseEntity(new SuccessfulResponse("success", allCmtDTO),
+
+        return new ResponseEntity(new SuccessfulResponse("success", allCmts),
                 HttpStatus.OK);
     }
 
@@ -99,13 +85,7 @@ public class CommentedPostController {
         if (authentication.getPrincipal().toString().equals(tourist.getUserName())) {
             commentedPost.setContent(newCommentPost.getContent());
             commentedPostRepository.save(commentedPost);
-            //convert to DTO
-            CommentDTO commentDTO = new CommentDTO();
-            commentDTO.setId(commentedPost.getId());
-            commentDTO.setContent(commentedPost.getContent());
-            commentDTO.setCreatedAt(commentedPost.getCreatedAt());
-            commentDTO.setTouristId(commentedPost.getTourist().getId());
-            return new ResponseEntity(new SuccessfulResponse("success", commentDTO),
+            return new ResponseEntity(new SuccessfulResponse("success", commentedPost),
                     HttpStatus.OK);
         } else {
             Map<String, String> errors = new HashMap<>();

@@ -54,7 +54,6 @@ public class TokenAuthenticationServiceImpl implements TokenAuthenticationServic
             String json = "";
             if (userRepository.findByUserName(username).get().getRole().equals("ROLE_TOURIST")) {
                 Tourist tourist = touristRepository.findByUserName(username).get();
-                tourist.getImage().setUrl(storageService.load(tourist.getImage().getUrl()));
                 json = mapper.writeValueAsString(tourist);
             } else {
                 json = mapper.writeValueAsString(adminRepository.findByUserName(username).get());

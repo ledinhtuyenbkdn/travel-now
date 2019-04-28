@@ -5,5 +5,4 @@ public interface StorageService {
 
     void delete(String fileId);
 
-    String load(String fileId);
 }

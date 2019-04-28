@@ -56,14 +56,10 @@ public class PlaceController {
             place.setProvince(optionalProvince.get());
             place.setCategory(optionalCategory.get());
             for (String image : placeDTO.getImages()) {
-                String fileId = storageService.store(image);
-                place.getImages().add(new Image(fileId));
+                String imageUrl = storageService.store(image);
+                place.getImages().add(new Image(imageUrl));
             }
             placeRepository.save(place);
-
-            for (Image image : place.getImages()) {
-                image.setUrl(storageService.load(image.getUrl()));
-            }
             return new ResponseEntity(new SuccessfulResponse("success", place), HttpStatus.OK);
         } else {
             if (!optionalCategory.isPresent()) {
@@ -79,11 +75,6 @@ public class PlaceController {
     @GetMapping("/places")
     public ResponseEntity getAllPlaces(@RequestParam(value = "s", defaultValue = "") String keyword) {
         List<Place> places = placeRepository.findAllByNamePlaceContains(keyword);
-        for (Place place : places) {
-            for (Image image : place.getImages()) {
-                image.setUrl(storageService.load(image.getUrl()));
-            }
-        }
         return ResponseEntity.ok(places);
     }
 
@@ -97,9 +88,6 @@ public class PlaceController {
                     HttpStatus.NOT_FOUND);
         }
         Place place = optionalPlace.get();
-        for (Image image : place.getImages()) {
-            image.setUrl(storageService.load(image.getUrl()));
-        }
         return new ResponseEntity(new SuccessfulResponse("success", place), HttpStatus.OK);
     }
 
@@ -133,9 +121,6 @@ public class PlaceController {
         place.setCategory(optionalCategory.get());
         placeRepository.save(place);
 
-        for (Image image : place.getImages()) {
-            image.setUrl(storageService.load(image.getUrl()));
-        }
         return new ResponseEntity(new SuccessfulResponse("success", place), HttpStatus.OK);
     }
 

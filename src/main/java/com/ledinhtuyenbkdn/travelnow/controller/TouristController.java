@@ -53,7 +53,7 @@ public class TouristController {
         } else {
             //set default image avatar
             Image image = new Image();
-            image.setUrl("default");
+            image.setUrl("http://res.cloudinary.com/ledinhtuyenbkdn/image/upload/default");
             tourist.setImage(image);
 
             tourist.setRole("ROLE_TOURIST");
@@ -78,11 +78,6 @@ public class TouristController {
         tourist.setUserName(null);
         tourist.setPassword(null);
 
-        Image image = new Image();
-        image.setId(tourist.getImage().getId());
-        image.setUrl(storageService.load(tourist.getImage().getUrl()));
-        tourist.setImage(image);
-
         return new ResponseEntity(new SuccessfulResponse("success", tourist),
                 HttpStatus.OK);
     }
@@ -93,7 +88,6 @@ public class TouristController {
         for (Tourist tourist : tourists) {
             tourist.setUserName(null);
             tourist.setPassword(null);
-            tourist.getImage().setUrl(storageService.load(tourist.getImage().getUrl()));
         }
         return ResponseEntity.ok(tourists);
     }
@@ -144,14 +138,12 @@ public class TouristController {
         Tourist currentTourist = optionalTourist.get();
         if (authentication.getPrincipal().toString().equals(currentTourist.getUserName())) {
             Image currentImage = currentTourist.getImage();
-            if (!currentImage.getUrl().equals("default")) {
+            if (!currentImage.getUrl().equals("http://res.cloudinary.com/ledinhtuyenbkdn/image/upload/default")) {
                 storageService.delete(currentImage.getUrl());
             }
             String newImageUrl = storageService.store(image.getUrl());
             currentImage.setUrl(newImageUrl);
             imageRepository.save(currentImage);
-
-            currentImage.setUrl(storageService.load(newImageUrl));
             return new ResponseEntity(new SuccessfulResponse("success", currentTourist),
                     HttpStatus.OK);
         } else {
