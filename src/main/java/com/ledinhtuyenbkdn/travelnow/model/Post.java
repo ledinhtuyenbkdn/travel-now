@@ -21,6 +21,8 @@ public class Post {
     private Set<Image> images = new HashSet<>();
     @Relationship(type = "TAG_WITH", direction = Relationship.OUTGOING)
     private Place place;
+    @Relationship(type = "POSTED_BY", direction = Relationship.OUTGOING)
+    private Tourist tourist;
 
     public Long getId() {
         return id;
@@ -60,5 +62,13 @@ public class Post {
 
     public void setPlace(Place place) {
         this.place = place;
+    }
+
+    public Tourist getTourist() {
+        return tourist;
+    }
+
+    public void setTourist(Tourist tourist) {
+        this.tourist = tourist;
     }
 }

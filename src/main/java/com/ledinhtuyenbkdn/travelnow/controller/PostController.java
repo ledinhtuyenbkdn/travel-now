@@ -45,6 +45,7 @@ public class PostController {
         Optional<Tourist> optionalTourist = touristRepository.findByUserName(authentication.getPrincipal().toString());
         if (!optionalPlace.isPresent() || !optionalTourist.isPresent()) {
             Map<String, String> errors = new HashMap<>();
+            errors.put("id", "id place is not existed");
             return new ResponseEntity(new ErrorResponse("error", errors), HttpStatus.BAD_REQUEST);
         }
 
@@ -55,26 +56,24 @@ public class PostController {
         post.setContent(postDTO.getContent());
         post.setCreatedAt(LocalDateTime.now());
         post.setPlace(place);
+        post.setTourist(tourist);
 
         for (String image : postDTO.getImages()) {
             String imageUrl = storageService.store(image);
             post.getImages().add(new Image(imageUrl));
         }
         postRepository.save(post);
-        if (tourist.getPosts() == null) {
-            tourist.setPosts(new HashSet<>());
-        }
-        tourist.getPosts().add(post);
-        touristRepository.save(tourist);
 
-        Map<String, Object> json = new LinkedHashMap<>();
-        json.put("id", post.getId());
-        json.put("content", post.getContent());
-        json.put("createdAt", post.getCreatedAt());
-        json.put("images", post.getImages());
-        json.put("placeId", post.getPlace().getId());
+        post.getTourist().setUserName(null);
+        post.getTourist().setPassword(null);
+        return new ResponseEntity(new SuccessfulResponse("success", post), HttpStatus.OK);
+    }
 
-        return new ResponseEntity(new SuccessfulResponse("success", json), HttpStatus.OK);
+    @GetMapping("/tourists/{touristId}/posts")
+    public ResponseEntity readAllPosts(@PathVariable("touristId") Long id) {
+        List<Post> posts = postRepository.findAllByTouristId(id);
+
+        return new ResponseEntity(new SuccessfulResponse("success", posts), HttpStatus.OK);
     }
 
     @GetMapping("/tourists/{touristId}/posts/{postId}")
@@ -87,15 +86,9 @@ public class PostController {
                     HttpStatus.NOT_FOUND);
         }
         Post post = optionalPost.get();
-
-        Map<String, Object> json = new LinkedHashMap<>();
-        json.put("id", post.getId());
-        json.put("content", post.getContent());
-        json.put("createdAt", post.getCreatedAt());
-        json.put("images", post.getImages());
-        json.put("placeId", post.getPlace().getId());
-
-        return new ResponseEntity(new SuccessfulResponse("success", json), HttpStatus.OK);
+        post.getTourist().setUserName(null);
+        post.getTourist().setPassword(null);
+        return new ResponseEntity(new SuccessfulResponse("success", post), HttpStatus.OK);
     }
 
     @PutMapping("/tourists/{touristId}/posts/{postId}")
@@ -114,17 +107,10 @@ public class PostController {
                     HttpStatus.FORBIDDEN);
         }
         Post post = optionalPost.get();
-        post.setContent(postDTO.getContent());
         postRepository.save(post);
-
-        Map<String, Object> json = new LinkedHashMap<>();
-        json.put("id", post.getId());
-        json.put("content", post.getContent());
-        json.put("createdAt", post.getCreatedAt());
-        json.put("images", post.getImages());
-        json.put("placeId", post.getPlace().getId());
-
-        return new ResponseEntity(new SuccessfulResponse("success", json), HttpStatus.OK);
+        post.getTourist().setUserName(null);
+        post.getTourist().setPassword(null);
+        return new ResponseEntity(new SuccessfulResponse("success", post), HttpStatus.OK);
     }
 
     @DeleteMapping("/tourists/{touristId}/posts/{postId}")

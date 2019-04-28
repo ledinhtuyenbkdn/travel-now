@@ -97,6 +97,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 //Post crud
                 .antMatchers(HttpMethod.POST, "/tourists/{touristId}/posts").hasRole("TOURIST")
                 .antMatchers(HttpMethod.GET, "/tourists/{touristId}/posts/{postId}").permitAll()
+                .antMatchers(HttpMethod.GET, "/tourists/{touristId}/posts").permitAll()
                 .antMatchers(HttpMethod.PUT, "/tourists/{touristId}/posts/{postId}").hasRole("TOURIST")
                 .antMatchers(HttpMethod.DELETE, "/tourists/{touristId}/posts/{postId}").hasRole("TOURIST")
                 //Like crud
