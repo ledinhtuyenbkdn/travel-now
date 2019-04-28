@@ -2,6 +2,7 @@ package com.ledinhtuyenbkdn.travelnow.controller;
 
 import com.ledinhtuyenbkdn.travelnow.model.Image;
 import com.ledinhtuyenbkdn.travelnow.model.Tourist;
+import com.ledinhtuyenbkdn.travelnow.model.TouristDTO;
 import com.ledinhtuyenbkdn.travelnow.repository.ImageRepository;
 import com.ledinhtuyenbkdn.travelnow.repository.TouristRepository;
 import com.ledinhtuyenbkdn.travelnow.repository.UserRepository;
@@ -44,20 +45,23 @@ public class TouristController {
     }
 
     @PostMapping("/tourists")
-    public ResponseEntity createTourist(@Valid @RequestBody Tourist tourist) {
-        if (userRepository.findByUserName(tourist.getUserName()).isPresent()) {
+    public ResponseEntity createTourist(@Valid @RequestBody TouristDTO touristDTO) {
+        if (userRepository.findByUserName(touristDTO.getUserName()).isPresent()) {
             Map<String, String> errors = new HashMap<>();
             errors.put("userName", "username has existed");
             return new ResponseEntity(new ErrorResponse("error", errors),
                     HttpStatus.BAD_REQUEST);
         } else {
+            Tourist tourist = new Tourist();
+            tourist.setUserName(touristDTO.getUserName());
+            tourist.setFullName(touristDTO.getFullName());
             //set default image avatar
             Image image = new Image();
             image.setUrl("http://res.cloudinary.com/ledinhtuyenbkdn/image/upload/default");
             tourist.setImage(image);
 
             tourist.setRole("ROLE_TOURIST");
-            tourist.setPassword(passwordEncoder.encode(tourist.getPassword()));
+            tourist.setPassword(passwordEncoder.encode(touristDTO.getPassword()));
             touristRepository.save(tourist);
             return new ResponseEntity(new SuccessfulResponse("success", tourist),
                     HttpStatus.OK);
@@ -75,8 +79,6 @@ public class TouristController {
                     HttpStatus.NOT_FOUND);
         }
         Tourist tourist = optionalTourist.get();
-        tourist.setUserName(null);
-        tourist.setPassword(null);
 
         return new ResponseEntity(new SuccessfulResponse("success", tourist),
                 HttpStatus.OK);
@@ -85,16 +87,12 @@ public class TouristController {
     @GetMapping("/tourists")
     public ResponseEntity getAllTourist(@RequestParam(value = "s", defaultValue = "") String keyword) {
         List<Tourist> tourists = touristRepository.findAllByFullNameContains(keyword);
-        for (Tourist tourist : tourists) {
-            tourist.setUserName(null);
-            tourist.setPassword(null);
-        }
         return ResponseEntity.ok(tourists);
     }
 
     @PutMapping("/tourists/{id}")
     public ResponseEntity updateTourist(@PathVariable("id") Long id,
-                                        @Valid @RequestBody Tourist tourist,
+                                        @Valid @RequestBody TouristDTO touristDTO,
                                         Authentication authentication) {
         Optional<Tourist> optionalTourist = touristRepository.findById(id);
         //check valid id tourist
@@ -106,11 +104,11 @@ public class TouristController {
         }
         Tourist currentTourist = optionalTourist.get();
         if (authentication.getPrincipal().toString().equals(currentTourist.getUserName())) {
-            currentTourist.setPassword(passwordEncoder.encode(tourist.getPassword()));
-            currentTourist.setFullName(tourist.getFullName());
-            currentTourist.setGender(tourist.getGender());
-            currentTourist.setBirthDate(tourist.getBirthDate());
-            currentTourist.setNationality(tourist.getNationality());
+            currentTourist.setPassword(passwordEncoder.encode(touristDTO.getPassword()));
+            currentTourist.setFullName(touristDTO.getFullName());
+            currentTourist.setGender(touristDTO.getGender());
+            currentTourist.setBirthDate(touristDTO.getBirthDate());
+            currentTourist.setNationality(touristDTO.getNationality());
             touristRepository.save(currentTourist);
 
             return new ResponseEntity(new SuccessfulResponse("success", currentTourist),

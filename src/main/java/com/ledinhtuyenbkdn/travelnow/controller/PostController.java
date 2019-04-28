@@ -63,9 +63,6 @@ public class PostController {
             post.getImages().add(new Image(imageUrl));
         }
         postRepository.save(post);
-
-        post.getTourist().setUserName(null);
-        post.getTourist().setPassword(null);
         return new ResponseEntity(new SuccessfulResponse("success", post), HttpStatus.OK);
     }
 
@@ -86,8 +83,6 @@ public class PostController {
                     HttpStatus.NOT_FOUND);
         }
         Post post = optionalPost.get();
-        post.getTourist().setUserName(null);
-        post.getTourist().setPassword(null);
         return new ResponseEntity(new SuccessfulResponse("success", post), HttpStatus.OK);
     }
 
@@ -108,8 +103,6 @@ public class PostController {
         }
         Post post = optionalPost.get();
         postRepository.save(post);
-        post.getTourist().setUserName(null);
-        post.getTourist().setPassword(null);
         return new ResponseEntity(new SuccessfulResponse("success", post), HttpStatus.OK);
     }
 
