@@ -1,6 +1,8 @@
 package com.ledinhtuyenbkdn.travelnow.controller;
 
 import com.ledinhtuyenbkdn.travelnow.model.Province;
+import com.ledinhtuyenbkdn.travelnow.model.ProvinceDTO;
+import com.ledinhtuyenbkdn.travelnow.repository.PlaceRepository;
 import com.ledinhtuyenbkdn.travelnow.repository.ProvinceRepository;
 import com.ledinhtuyenbkdn.travelnow.response.ErrorResponse;
 import com.ledinhtuyenbkdn.travelnow.response.SuccessfulResponse;
@@ -14,9 +16,12 @@ import java.util.*;
 @Controller
 public class ProvinceController {
     private ProvinceRepository provinceRepository;
+    private PlaceRepository placeRepository;
 
-    public ProvinceController(ProvinceRepository provinceRepository) {
+    public ProvinceController(ProvinceRepository provinceRepository,
+                              PlaceRepository placeRepository) {
         this.provinceRepository = provinceRepository;
+        this.placeRepository = placeRepository;
     }
 
     @PostMapping("/provinces")
@@ -42,10 +47,12 @@ public class ProvinceController {
 
     @GetMapping("/provinces")
     public ResponseEntity readAllProvinces() {
-        List<Province> provinces = new ArrayList<>();
+        List<ProvinceDTO> provinces = new ArrayList<>();
         Iterable<Province> provinceIterable = provinceRepository.findAll();
         provinceIterable.forEach(o -> {
-            provinces.add(o);
+            ProvinceDTO provinceDTO = new ProvinceDTO(o.getId(), o.getNameProvince(),
+                    placeRepository.findAllByProvinceId(o.getId()).size());
+            provinces.add(provinceDTO);
         });
         return new ResponseEntity(new SuccessfulResponse("success", provinces), HttpStatus.OK);
     }

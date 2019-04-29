@@ -1,10 +1,7 @@
 package com.ledinhtuyenbkdn.travelnow.controller;
 
 import com.ledinhtuyenbkdn.travelnow.model.*;
-import com.ledinhtuyenbkdn.travelnow.repository.CategoryRepository;
-import com.ledinhtuyenbkdn.travelnow.repository.ImageRepository;
-import com.ledinhtuyenbkdn.travelnow.repository.PlaceRepository;
-import com.ledinhtuyenbkdn.travelnow.repository.ProvinceRepository;
+import com.ledinhtuyenbkdn.travelnow.repository.*;
 import com.ledinhtuyenbkdn.travelnow.response.ErrorResponse;
 import com.ledinhtuyenbkdn.travelnow.response.SuccessfulResponse;
 import com.ledinhtuyenbkdn.travelnow.service.StorageService;
@@ -15,10 +12,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 public class PlaceController {
@@ -27,17 +21,20 @@ public class PlaceController {
     private CategoryRepository categoryRepository;
     private ImageRepository imageRepository;
     private StorageService storageService;
+    private RatedPlaceRepository ratedPlaceRepository;
 
     public PlaceController(PlaceRepository placeRepository,
                            ProvinceRepository provinceRepository,
                            CategoryRepository categoryRepository,
                            ImageRepository imageRepository,
-                           StorageService storageService) {
+                           StorageService storageService,
+                           RatedPlaceRepository ratedPlaceRepository) {
         this.placeRepository = placeRepository;
         this.provinceRepository = provinceRepository;
         this.categoryRepository = categoryRepository;
         this.imageRepository = imageRepository;
         this.storageService = storageService;
+        this.ratedPlaceRepository = ratedPlaceRepository;
     }
 
     @PostMapping("/places")
@@ -75,7 +72,26 @@ public class PlaceController {
     @GetMapping("/places")
     public ResponseEntity getAllPlaces(@RequestParam(value = "s", defaultValue = "") String keyword) {
         List<Place> places = placeRepository.findAllByNamePlaceContains(keyword);
-        return ResponseEntity.ok(places);
+        List<Map<String, Object>> responseJson = new ArrayList<>();
+        places.forEach(place -> {
+            List<RatedPlace> rates = ratedPlaceRepository.findByPlaceId(place.getId());
+            int numRates = rates.size();
+            int sumAllStars = rates.stream().reduce(0, (sum, rate) -> sum + rate.getNumberStar(), Integer::sum);
+            double averageStar = numRates == 0 ? 0 : sumAllStars * 1.0 / numRates;
+            Map<String, Object> json = new LinkedHashMap<>();
+            json.put("id", place.getId());
+            json.put("namePlace", place.getNamePlace());
+            json.put("about", place.getAbout());
+            json.put("address", place.getAddress());
+            json.put("latitude", place.getLatitude());
+            json.put("longitude", place.getLongitude());
+            json.put("images", place.getImages());
+            json.put("province", place.getProvince());
+            json.put("category", place.getCategory());
+            json.put("averageStar", averageStar);
+            responseJson.add(json);
+        });
+        return ResponseEntity.ok(responseJson);
     }
 
     @GetMapping("/places/{id}")
@@ -88,7 +104,22 @@ public class PlaceController {
                     HttpStatus.NOT_FOUND);
         }
         Place place = optionalPlace.get();
-        return new ResponseEntity(new SuccessfulResponse("success", place), HttpStatus.OK);
+        List<RatedPlace> rates = ratedPlaceRepository.findByPlaceId(id);
+        int numRates = rates.size();
+        int sumAllStars = rates.stream().reduce(0, (sum, rate) -> sum + rate.getNumberStar(), Integer::sum);
+        double averageStar = numRates == 0 ? 0 : sumAllStars * 1.0 / numRates;
+        Map<String, Object> json = new LinkedHashMap<>();
+        json.put("id", place.getId());
+        json.put("namePlace", place.getNamePlace());
+        json.put("about", place.getAbout());
+        json.put("address", place.getAddress());
+        json.put("latitude", place.getLatitude());
+        json.put("longitude", place.getLongitude());
+        json.put("images", place.getImages());
+        json.put("province", place.getProvince());
+        json.put("category", place.getCategory());
+        json.put("averageStar", averageStar);
+        return new ResponseEntity(new SuccessfulResponse("success", json), HttpStatus.OK);
     }
 
     @PutMapping("/places/{id}")

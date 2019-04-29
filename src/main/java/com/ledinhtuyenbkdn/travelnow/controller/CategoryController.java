@@ -1,7 +1,9 @@
 package com.ledinhtuyenbkdn.travelnow.controller;
 
 import com.ledinhtuyenbkdn.travelnow.model.Category;
+import com.ledinhtuyenbkdn.travelnow.model.CategoryDTO;
 import com.ledinhtuyenbkdn.travelnow.repository.CategoryRepository;
+import com.ledinhtuyenbkdn.travelnow.repository.PlaceRepository;
 import com.ledinhtuyenbkdn.travelnow.response.ErrorResponse;
 import com.ledinhtuyenbkdn.travelnow.response.SuccessfulResponse;
 import org.springframework.http.HttpStatus;
@@ -14,9 +16,12 @@ import java.util.*;
 @Controller
 public class CategoryController {
     private CategoryRepository categoryRepository;
+    private PlaceRepository placeRepository;
 
-    public CategoryController(CategoryRepository categoryRepository) {
+    public CategoryController(CategoryRepository categoryRepository,
+                              PlaceRepository placeRepository) {
         this.categoryRepository = categoryRepository;
+        this.placeRepository = placeRepository;
     }
 
     @PostMapping("/categories")
@@ -42,10 +47,12 @@ public class CategoryController {
 
     @GetMapping("/categories")
     public ResponseEntity readAllCategories() {
-        List<Category> categories = new ArrayList<>();
+        List<CategoryDTO> categories = new ArrayList<>();
         Iterable<Category> categoryIterable = categoryRepository.findAll();
         categoryIterable.forEach(o -> {
-            categories.add(o);
+            CategoryDTO categoryDTO = new CategoryDTO(o.getId(), o.getNameCategory(),
+                    placeRepository.findAllByCategoryId(o.getId()).size());
+            categories.add(categoryDTO);
         });
         return new ResponseEntity(new SuccessfulResponse("success", categories), HttpStatus.OK);
     }
