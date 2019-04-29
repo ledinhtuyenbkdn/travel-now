@@ -30,7 +30,7 @@ public class LikedPostController {
         this.likedPostRepository = likedPostRepository;
     }
 
-    @PostMapping("/tourists/{touristId}/posts/{postId}/likes")
+    @PostMapping("/posts/{postId}/likes")
     public ResponseEntity createLikedPost(@PathVariable("postId") Long postId,
                                           Authentication authentication) {
         Optional<Post> optionalPost = postRepository.findById(postId);
@@ -63,7 +63,7 @@ public class LikedPostController {
         return new ResponseEntity(new SuccessfulResponse("success", likedPostDTO), HttpStatus.OK);
     }
 
-    @GetMapping("/tourists/{touristId}/posts/{postId}/likes")
+    @GetMapping("/posts/{postId}/likes")
     public ResponseEntity readAllLikedPosts(@PathVariable("postId") Long postId) {
         Optional<Post> optionalPost = postRepository.findById(postId);
         if (!optionalPost.isPresent()) {
@@ -85,7 +85,7 @@ public class LikedPostController {
                 HttpStatus.OK);
     }
 
-    @DeleteMapping("/tourists/{touristId}/posts/{postId}/likes/{likeId}")
+    @DeleteMapping("/posts/{postId}/likes/{likeId}")
     public ResponseEntity deleteLikedPost(@PathVariable("likeId") Long likeId,
                                           Authentication authentication) {
         Optional<LikedPost> optionalLikedPost = likedPostRepository.findById(likeId);

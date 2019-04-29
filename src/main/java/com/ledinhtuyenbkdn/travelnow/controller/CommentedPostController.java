@@ -31,7 +31,7 @@ public class CommentedPostController {
         this.postRepository = postRepository;
     }
 
-    @PostMapping("/tourists/{touristId}/posts/{postId}/comments")
+    @PostMapping("/posts/{postId}/comments")
     public ResponseEntity createCommentPost(@PathVariable("postId") Long postId,
                                             @RequestBody CommentedPost commentedPost,
                                             Authentication authentication) {
@@ -53,7 +53,7 @@ public class CommentedPostController {
         return new ResponseEntity(new SuccessfulResponse("success", commentedPost), HttpStatus.OK);
     }
 
-    @GetMapping("/tourists/{touristId}/posts/{postId}/comments")
+    @GetMapping("/posts/{postId}/comments")
     public ResponseEntity readAllComments(@PathVariable("postId") Long postId) {
         Optional<Post> optionalPost = postRepository.findById(postId);
         if (!optionalPost.isPresent()) {
@@ -69,7 +69,7 @@ public class CommentedPostController {
                 HttpStatus.OK);
     }
 
-    @PutMapping("/tourists/{touristId}/posts/{postId}/comments/{idComment}")
+    @PutMapping("/posts/{postId}/comments/{idComment}")
     public ResponseEntity updateCommentPost(@PathVariable("idComment") Long idCmt,
                                             @RequestBody CommentedPost newCommentPost,
                                             Authentication authentication) {
@@ -95,7 +95,7 @@ public class CommentedPostController {
         }
     }
 
-    @DeleteMapping("/tourists/{touristId}/posts/{postId}/comments/{idComment}")
+    @DeleteMapping("/posts/{postId}/comments/{idComment}")
     public ResponseEntity deleteCommentPost(@PathVariable("idComment") Long idCmt,
                                             Authentication authentication) {
         Optional<CommentedPost> optionalCommentedPost = commentedPostRepository.findById(idCmt);

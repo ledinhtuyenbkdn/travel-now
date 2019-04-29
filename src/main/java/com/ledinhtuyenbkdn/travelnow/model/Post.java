@@ -16,13 +16,14 @@ public class Post {
     @GeneratedValue
     private Long id;
     private String content;
-    private LocalDateTime createdAt;
     @Relationship(type = "HAS_IMAGE", direction = Relationship.OUTGOING)
     private Set<Image> images = new HashSet<>();
     @Relationship(type = "TAG_WITH", direction = Relationship.OUTGOING)
     private Place place;
     @Relationship(type = "POSTED_BY", direction = Relationship.OUTGOING)
     private Tourist tourist;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
     public Long getId() {
         return id;
@@ -70,5 +71,13 @@ public class Post {
 
     public void setTourist(Tourist tourist) {
         this.tourist = tourist;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }

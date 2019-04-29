@@ -12,6 +12,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @RestController
@@ -52,6 +53,8 @@ public class PlaceController {
             place.setLongitude(placeDTO.getLongitude());
             place.setProvince(optionalProvince.get());
             place.setCategory(optionalCategory.get());
+            place.setCreatedAt(LocalDateTime.now());
+            place.setUpdatedAt(LocalDateTime.now());
             for (String image : placeDTO.getImages()) {
                 String imageUrl = storageService.store(image);
                 place.getImages().add(new Image(imageUrl));
@@ -88,6 +91,8 @@ public class PlaceController {
             json.put("images", place.getImages());
             json.put("province", place.getProvince());
             json.put("category", place.getCategory());
+            json.put("createdAt", place.getCreatedAt());
+            json.put("updatedAt", place.getUpdatedAt());
             json.put("averageStar", averageStar);
             responseJson.add(json);
         });
@@ -118,6 +123,8 @@ public class PlaceController {
         json.put("images", place.getImages());
         json.put("province", place.getProvince());
         json.put("category", place.getCategory());
+        json.put("createdAt", place.getCreatedAt());
+        json.put("updatedAt", place.getUpdatedAt());
         json.put("averageStar", averageStar);
         return new ResponseEntity(new SuccessfulResponse("success", json), HttpStatus.OK);
     }
@@ -150,6 +157,7 @@ public class PlaceController {
         place.setLongitude(placeDTO.getLongitude());
         place.setProvince(optionalProvince.get());
         place.setCategory(optionalCategory.get());
+        place.setUpdatedAt(LocalDateTime.now());
         placeRepository.save(place);
 
         return new ResponseEntity(new SuccessfulResponse("success", place), HttpStatus.OK);

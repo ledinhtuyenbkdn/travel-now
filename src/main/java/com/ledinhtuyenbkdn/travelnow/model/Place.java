@@ -6,6 +6,7 @@ import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 
 import javax.validation.constraints.NotBlank;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -29,11 +30,13 @@ public class Place {
     private Province province;
     @Relationship(type = "IS_BELONGS_TO", direction = Relationship.OUTGOING)
     private Category category;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
     public Place() {
     }
 
-    public Place(Long id, String namePlace, String about, String address, Double latitude, Double longitude, Set<Image> images, Province province, Category category) {
+    public Place(Long id, @NotBlank String namePlace, String about, @NotBlank String address, Double latitude, Double longitude, Set<Image> images, Province province, Category category, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.namePlace = namePlace;
         this.about = about;
@@ -43,6 +46,8 @@ public class Place {
         this.images = images;
         this.province = province;
         this.category = category;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 
     public Long getId() {
@@ -115,5 +120,21 @@ public class Place {
 
     public void setCategory(Category category) {
         this.category = category;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }

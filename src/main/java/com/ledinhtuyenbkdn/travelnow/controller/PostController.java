@@ -38,7 +38,7 @@ public class PostController {
         this.touristRepository = touristRepository;
     }
 
-    @PostMapping("/tourists/{touristId}/posts")
+    @PostMapping("/posts")
     public ResponseEntity createPost(@Valid @RequestBody PostDTO postDTO,
                                      Authentication authentication) {
         Optional<Place> optionalPlace = placeRepository.findById(postDTO.getPlaceId());
@@ -55,6 +55,7 @@ public class PostController {
         Post post = new Post();
         post.setContent(postDTO.getContent());
         post.setCreatedAt(LocalDateTime.now());
+        post.setUpdatedAt(LocalDateTime.now());
         post.setPlace(place);
         post.setTourist(tourist);
 
@@ -73,7 +74,7 @@ public class PostController {
         return new ResponseEntity(new SuccessfulResponse("success", posts), HttpStatus.OK);
     }
 
-    @GetMapping("/tourists/{touristId}/posts/{postId}")
+    @GetMapping("/posts/{postId}")
     public ResponseEntity readPost(@PathVariable("postId") Long id) {
         Optional<Post> optionalPost = postRepository.findById(id);
         if (!optionalPost.isPresent()) {
@@ -86,41 +87,47 @@ public class PostController {
         return new ResponseEntity(new SuccessfulResponse("success", post), HttpStatus.OK);
     }
 
-    @PutMapping("/tourists/{touristId}/posts/{postId}")
-    public ResponseEntity updatePlace(@PathVariable("touristId") Long touristId,
-                                      @PathVariable("postId") Long postId,
+    @PutMapping("/posts/{postId}")
+    public ResponseEntity updatePost(@PathVariable("postId") Long postId,
                                       @RequestBody PostDTO postDTO,
                                       Authentication authentication) {
-        Optional<Tourist> optionalTourist = touristRepository.findById(touristId);
         Optional<Post> optionalPost = postRepository.findById(postId);
-        if (!optionalPost.isPresent() || !optionalTourist.isPresent()) {
+        if (!optionalPost.isPresent()) {
             return new ResponseEntity(new ErrorResponse("error", null),
                     HttpStatus.NOT_FOUND);
         }
-        if (!optionalTourist.get().getUserName().equals(authentication.getPrincipal().toString())) {
+        Post post = optionalPost.get();
+        Tourist tourist = post.getTourist();
+        if (!tourist.getUserName().equals(authentication.getPrincipal().toString())) {
             return new ResponseEntity(new ErrorResponse("error", null),
                     HttpStatus.FORBIDDEN);
         }
-        Post post = optionalPost.get();
+        Optional<Place> optionalPlace = placeRepository.findById(postDTO.getPlaceId());
+        if (!optionalPlace.isPresent()) {
+            Map<String, String> errors = new HashMap<>();
+            errors.put("id", "id place is not existed");
+            return new ResponseEntity(new ErrorResponse("error", errors), HttpStatus.BAD_REQUEST);
+        }
+        post.setContent(postDTO.getContent());
+        post.setPlace(optionalPlace.get());
         postRepository.save(post);
         return new ResponseEntity(new SuccessfulResponse("success", post), HttpStatus.OK);
     }
 
-    @DeleteMapping("/tourists/{touristId}/posts/{postId}")
-    public ResponseEntity deletePost(@PathVariable("touristId") Long touristId,
-                                     @PathVariable("postId") Long postId,
+    @DeleteMapping("/posts/{postId}")
+    public ResponseEntity deletePost(@PathVariable("postId") Long postId,
                                      Authentication authentication) {
-        Optional<Tourist> optionalTourist = touristRepository.findById(touristId);
         Optional<Post> optionalPost = postRepository.findById(postId);
-        if (!optionalPost.isPresent() || !optionalTourist.isPresent()) {
+        if (!optionalPost.isPresent()) {
             return new ResponseEntity(new ErrorResponse("error", null),
                     HttpStatus.NOT_FOUND);
         }
-        if (!optionalTourist.get().getUserName().equals(authentication.getPrincipal().toString())) {
+        Post post = optionalPost.get();
+        Tourist tourist = post.getTourist();
+        if (!tourist.getUserName().equals(authentication.getPrincipal().toString())) {
             return new ResponseEntity(new ErrorResponse("error", null),
                     HttpStatus.FORBIDDEN);
         }
-        Post post = optionalPost.get();
         for (Image image : post.getImages()) {
             storageService.delete(image.getUrl());
             imageRepository.delete(image);
