@@ -2,6 +2,7 @@ package com.ledinhtuyenbkdn.travelnow.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ledinhtuyenbkdn.travelnow.model.User;
+import com.ledinhtuyenbkdn.travelnow.model.UserDTO;
 import com.ledinhtuyenbkdn.travelnow.service.TokenAuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -34,7 +35,7 @@ public class JwtLoginFilter extends AbstractAuthenticationProcessingFilter {
                 .collect(Collectors.joining(System.lineSeparator()));
 
         ObjectMapper object = new ObjectMapper();
-        User user = object.readValue(requestBody, User.class);
+        UserDTO user = object.readValue(requestBody, UserDTO.class);
 
         return getAuthenticationManager().authenticate(
                 new UsernamePasswordAuthenticationToken(user.getUserName(),
