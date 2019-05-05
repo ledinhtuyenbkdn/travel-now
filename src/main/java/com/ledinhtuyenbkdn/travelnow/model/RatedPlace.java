@@ -1,5 +1,6 @@
 package com.ledinhtuyenbkdn.travelnow.model;
 
+import org.hibernate.validator.constraints.Range;
 import org.neo4j.ogm.annotation.*;
 
 import javax.validation.constraints.Size;
@@ -10,7 +11,7 @@ public class RatedPlace {
     @GeneratedValue
     private Long id;
 
-    @Size(min = 1, max = 5)
+    @Range(min = 0L, max = 5L)
     private Integer numberStar;
     @StartNode
     private Tourist tourist;

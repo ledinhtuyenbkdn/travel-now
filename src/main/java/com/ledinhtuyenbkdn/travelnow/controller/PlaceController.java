@@ -73,8 +73,19 @@ public class PlaceController {
     }
 
     @GetMapping("/places")
-    public ResponseEntity getAllPlaces(@RequestParam(value = "s", defaultValue = "") String keyword) {
-        List<Place> places = placeRepository.findAllByNamePlaceContains(keyword);
+    public ResponseEntity getAllPlaces(@RequestParam(value = "s", defaultValue = "") String keyword,
+                                       @RequestParam(value = "province", defaultValue = "") String province,
+                                       @RequestParam(value = "category", defaultValue = "") String category) {
+        List<Place> places = null;
+        if ("".equals(province) && "".equals(category)) {
+            places = placeRepository.findAllByNamePlaceContains(keyword);
+        } else if ("".equals(province)) {
+            places = placeRepository.findAllByNamePlaceContainsAndCategoryId(keyword, Long.parseLong(category));
+        } else if ("".equals(category)) {
+            places = placeRepository.findAllByNamePlaceContainsAndProvinceId(keyword, Long.parseLong(province));
+        } else {
+            places = placeRepository.findAllByNamePlaceContainsAndProvinceIdAndCategoryId(keyword, Long.parseLong(province), Long.parseLong(category));
+        }
         List<Map<String, Object>> responseJson = new ArrayList<>();
         places.forEach(place -> {
             List<RatedPlace> rates = ratedPlaceRepository.findByPlaceId(place.getId());
