@@ -113,6 +113,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, "/tourists/{id}/follows").hasRole("TOURIST")
                 .antMatchers(HttpMethod.DELETE, "/tourists/{id}/follows").hasRole("TOURIST")
                 .antMatchers(HttpMethod.GET, "/tourists/{id}/follows").permitAll()
+                .antMatchers(HttpMethod.GET, "/newsfeed").hasRole("TOURIST")
                 .anyRequest().permitAll()
                 .and()
                 .addFilterBefore(jwtLoginFilter(),
