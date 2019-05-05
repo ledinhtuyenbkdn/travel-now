@@ -3,6 +3,7 @@ package com.ledinhtuyenbkdn.travelnow.controller;
 import com.ledinhtuyenbkdn.travelnow.model.Image;
 import com.ledinhtuyenbkdn.travelnow.model.Tourist;
 import com.ledinhtuyenbkdn.travelnow.model.TouristDTO;
+import com.ledinhtuyenbkdn.travelnow.model.TouristInfoDTO;
 import com.ledinhtuyenbkdn.travelnow.repository.ImageRepository;
 import com.ledinhtuyenbkdn.travelnow.repository.TouristRepository;
 import com.ledinhtuyenbkdn.travelnow.repository.UserRepository;
@@ -92,7 +93,7 @@ public class TouristController {
 
     @PutMapping("/tourists/{id}")
     public ResponseEntity updateTourist(@PathVariable("id") Long id,
-                                        @Valid @RequestBody TouristDTO touristDTO,
+                                        @Valid @RequestBody TouristInfoDTO touristDTO,
                                         Authentication authentication) {
         Optional<Tourist> optionalTourist = touristRepository.findById(id);
         //check valid id tourist
@@ -104,11 +105,21 @@ public class TouristController {
         }
         Tourist currentTourist = optionalTourist.get();
         if (authentication.getPrincipal().toString().equals(currentTourist.getUserName())) {
-            currentTourist.setPassword(passwordEncoder.encode(touristDTO.getPassword()));
-            currentTourist.setFullName(touristDTO.getFullName());
-            currentTourist.setGender(touristDTO.getGender());
-            currentTourist.setBirthDate(touristDTO.getBirthDate());
-            currentTourist.setNationality(touristDTO.getNationality());
+            if (touristDTO.getFullName() != null) {
+                currentTourist.setFullName(touristDTO.getFullName());
+            }
+            if (touristDTO.getGender() != null) {
+                currentTourist.setGender(touristDTO.getGender());
+            }
+            if (touristDTO.getBirthDate() != null) {
+                currentTourist.setBirthDate(touristDTO.getBirthDate());
+            }
+            if (touristDTO.getNationality() != null) {
+                currentTourist.setNationality(touristDTO.getNationality());
+            }
+            if (touristDTO.getPassword() != null) {
+                currentTourist.setPassword(passwordEncoder.encode(touristDTO.getPassword()));
+            }
             touristRepository.save(currentTourist);
 
             return new ResponseEntity(new SuccessfulResponse("success", currentTourist),
