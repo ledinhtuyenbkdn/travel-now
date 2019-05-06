@@ -75,16 +75,17 @@ public class PlaceController {
     @GetMapping("/places")
     public ResponseEntity getAllPlaces(@RequestParam(value = "s", defaultValue = "") String keyword,
                                        @RequestParam(value = "province", defaultValue = "") String province,
-                                       @RequestParam(value = "category", defaultValue = "") String category) {
+                                       @RequestParam(value = "category", defaultValue = "") String category,
+                                       @RequestParam(value = "page", defaultValue = "1") Long page) {
         List<Place> places = null;
         if ("".equals(province) && "".equals(category)) {
-            places = placeRepository.findAllByNamePlaceContains(keyword);
+            places = placeRepository.findAllByNamePlaceContains(keyword, page);
         } else if ("".equals(province)) {
-            places = placeRepository.findAllByNamePlaceContainsAndCategoryId(keyword, Long.parseLong(category));
+            places = placeRepository.findAllByNamePlaceContainsAndCategoryId(keyword, Long.parseLong(category), page);
         } else if ("".equals(category)) {
-            places = placeRepository.findAllByNamePlaceContainsAndProvinceId(keyword, Long.parseLong(province));
+            places = placeRepository.findAllByNamePlaceContainsAndProvinceId(keyword, Long.parseLong(province), page);
         } else {
-            places = placeRepository.findAllByNamePlaceContainsAndProvinceIdAndCategoryId(keyword, Long.parseLong(province), Long.parseLong(category));
+            places = placeRepository.findAllByNamePlaceContainsAndProvinceIdAndCategoryId(keyword, Long.parseLong(province), Long.parseLong(category), page);
         }
         List<Map<String, Object>> responseJson = new ArrayList<>();
         places.forEach(place -> {
