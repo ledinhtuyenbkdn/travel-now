@@ -92,19 +92,7 @@ public class PlaceController {
             int numRates = rates.size();
             int sumAllStars = rates.stream().reduce(0, (sum, rate) -> sum + rate.getNumberStar(), Integer::sum);
             double averageStar = numRates == 0 ? 0 : sumAllStars * 1.0 / numRates;
-            Map<String, Object> json = new LinkedHashMap<>();
-            json.put("id", place.getId());
-            json.put("namePlace", place.getNamePlace());
-            json.put("about", place.getAbout());
-            json.put("address", place.getAddress());
-            json.put("latitude", place.getLatitude());
-            json.put("longitude", place.getLongitude());
-            json.put("images", place.getImages());
-            json.put("province", place.getProvince());
-            json.put("category", place.getCategory());
-            json.put("createdAt", place.getCreatedAt());
-            json.put("updatedAt", place.getUpdatedAt());
-            json.put("averageStar", averageStar);
+            Map<String, Object> json = serializePlace(place, averageStar);
             responseJson.add(json);
         });
         return ResponseEntity.ok(responseJson);
@@ -124,20 +112,23 @@ public class PlaceController {
         int numRates = rates.size();
         int sumAllStars = rates.stream().reduce(0, (sum, rate) -> sum + rate.getNumberStar(), Integer::sum);
         double averageStar = numRates == 0 ? 0 : sumAllStars * 1.0 / numRates;
-        Map<String, Object> json = new LinkedHashMap<>();
-        json.put("id", place.getId());
-        json.put("namePlace", place.getNamePlace());
-        json.put("about", place.getAbout());
-        json.put("address", place.getAddress());
-        json.put("latitude", place.getLatitude());
-        json.put("longitude", place.getLongitude());
-        json.put("images", place.getImages());
-        json.put("province", place.getProvince());
-        json.put("category", place.getCategory());
-        json.put("createdAt", place.getCreatedAt());
-        json.put("updatedAt", place.getUpdatedAt());
-        json.put("averageStar", averageStar);
+        Map<String, Object> json = serializePlace(place, averageStar);
         return new ResponseEntity(new SuccessfulResponse("success", json), HttpStatus.OK);
+    }
+
+    @GetMapping("/places/{id}/suggests")
+    public ResponseEntity getSuggestPlaces(@PathVariable("id") Long id) {
+        List<Place> suggestPlaces = placeRepository.findSuggestPlaces(id);
+        List<Map<String, Object>> responseJson = new ArrayList<>();
+        suggestPlaces.forEach(place -> {
+            List<RatedPlace> rates = ratedPlaceRepository.findByPlaceId(place.getId());
+            int numRates = rates.size();
+            int sumAllStars = rates.stream().reduce(0, (sum, rate) -> sum + rate.getNumberStar(), Integer::sum);
+            double averageStar = numRates == 0 ? 0 : sumAllStars * 1.0 / numRates;
+            Map<String, Object> json = serializePlace(place, averageStar);
+            responseJson.add(json);
+        });
+        return ResponseEntity.ok(responseJson);
     }
 
     @PutMapping("/places/{id}")
@@ -207,5 +198,22 @@ public class PlaceController {
         });
         return new ResponseEntity(new ErrorResponse("error", errors),
                 HttpStatus.BAD_REQUEST);
+    }
+
+    public Map<String, Object> serializePlace(Place place, double averageStar) {
+        Map<String, Object> json = new LinkedHashMap<>();
+        json.put("id", place.getId());
+        json.put("namePlace", place.getNamePlace());
+        json.put("about", place.getAbout());
+        json.put("address", place.getAddress());
+        json.put("latitude", place.getLatitude());
+        json.put("longitude", place.getLongitude());
+        json.put("images", place.getImages());
+        json.put("province", place.getProvince());
+        json.put("category", place.getCategory());
+        json.put("createdAt", place.getCreatedAt());
+        json.put("updatedAt", place.getUpdatedAt());
+        json.put("averageStar", averageStar);
+        return json;
     }
 }
