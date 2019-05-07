@@ -1,11 +1,8 @@
 package com.ledinhtuyenbkdn.travelnow.model;
 
-import java.time.LocalDateTime;
-
 public class PostDTO {
     private Long id;
     private String content;
-    private LocalDateTime createdAt;
     private String[] images;
     private Long placeId;
 
@@ -23,14 +20,6 @@ public class PostDTO {
 
     public void setContent(String content) {
         this.content = content;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
     }
 
     public String[] getImages() {

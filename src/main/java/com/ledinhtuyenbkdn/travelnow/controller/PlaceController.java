@@ -142,28 +142,55 @@ public class PlaceController {
         Optional<Category> optionalCategory = categoryRepository.findById(Long.valueOf(placeDTO.getCategoryId()));
         Optional<Place> optionalPlace = placeRepository.findById(id);
 
-        if (!optionalPlace.isPresent() || !optionalCategory.isPresent() || !optionalProvince.isPresent()) {
-            Map<String, String> errors = new HashMap<>();
-            if (!optionalPlace.isPresent()) {
-                errors.put("id", "id is not exist");
-            }
-            if (!optionalCategory.isPresent()) {
-                errors.put("category", "id is not exist");
-            }
-            if (!optionalProvince.isPresent()) {
-                errors.put("province", "id is not exist");
-            }
+        Map<String, String> errors = new HashMap<>();
+        if (!optionalPlace.isPresent()) {
+            errors.put("id", "id is not exist");
+        }
+        if (!optionalCategory.isPresent()) {
+            errors.put("category", "id is not exist");
+        }
+        if (!optionalProvince.isPresent()) {
+            errors.put("province", "id is not exist");
+        }
+        if (errors.size() > 0) {
             return new ResponseEntity(new ErrorResponse("error", errors),
                     HttpStatus.NOT_FOUND);
         }
+
         Place place = optionalPlace.get();
-        place.setNamePlace(placeDTO.getNamePlace());
-        place.setAbout(placeDTO.getAbout());
-        place.setAddress(placeDTO.getAddress());
-        place.setLatitude(placeDTO.getLatitude());
-        place.setLongitude(placeDTO.getLongitude());
-        place.setProvince(optionalProvince.get());
-        place.setCategory(optionalCategory.get());
+        if (placeDTO.getNamePlace() != null) {
+            place.setNamePlace(placeDTO.getNamePlace());
+        }
+        if (placeDTO.getAbout() != null) {
+            place.setAbout(placeDTO.getAbout());
+        }
+        if (placeDTO.getAddress() != null) {
+            place.setAddress(placeDTO.getAddress());
+        }
+        if (placeDTO.getLatitude() != null) {
+            place.setLatitude(placeDTO.getLatitude());
+        }
+        if (placeDTO.getLongitude() != null) {
+            place.setLongitude(placeDTO.getLongitude());
+        }
+        if (placeDTO.getProvinceId() != null) {
+            place.setProvince(optionalProvince.get());
+        }
+        if (placeDTO.getCategoryId() != null) {
+            place.setCategory(optionalCategory.get());
+        }
+        if (placeDTO.getImages() != null || placeDTO.getImages().length != 0) {
+            //delete images
+            place.getImages().forEach(o -> {
+                storageService.delete(o.getUrl());
+            });
+            place.getImages().clear();
+            //upload new image
+            for (String image : placeDTO.getImages()) {
+                String imageUrl = storageService.store(image);
+                place.getImages().add(new Image(imageUrl));
+            }
+        }
         place.setUpdatedAt(LocalDateTime.now());
         placeRepository.save(place);
 

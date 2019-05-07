@@ -1,20 +1,23 @@
 package com.ledinhtuyenbkdn.travelnow.model;
 
-import javax.validation.constraints.NotBlank;
-
 public class PlaceDTO {
-    @NotBlank
+    private Long id;
     private String namePlace;
     private String about;
-
-    @NotBlank
     private String address;
     private Double latitude;
     private Double longitude;
-
     private String[] images;
-    private int provinceId;
-    private int categoryId;
+    private Integer provinceId;
+    private Integer categoryId;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getNamePlace() {
         return namePlace;
@@ -64,19 +67,19 @@ public class PlaceDTO {
         this.images = images;
     }
 
-    public int getProvinceId() {
+    public Integer getProvinceId() {
         return provinceId;
     }
 
-    public void setProvinceId(int provinceId) {
+    public void setProvinceId(Integer provinceId) {
         this.provinceId = provinceId;
     }
 
-    public int getCategoryId() {
+    public Integer getCategoryId() {
         return categoryId;
     }
 
-    public void setCategoryId(int categoryId) {
+    public void setCategoryId(Integer categoryId) {
         this.categoryId = categoryId;
     }
 }

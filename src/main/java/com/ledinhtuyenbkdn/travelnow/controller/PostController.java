@@ -127,13 +127,30 @@ public class PostController {
                     HttpStatus.FORBIDDEN);
         }
         Optional<Place> optionalPlace = placeRepository.findById(postDTO.getPlaceId());
-        if (!optionalPlace.isPresent()) {
+        if (!optionalPlace.isPresent() && postDTO.getPlaceId() != null) {
             Map<String, String> errors = new HashMap<>();
             errors.put("id", "id place is not existed");
             return new ResponseEntity(new ErrorResponse("error", errors), HttpStatus.BAD_REQUEST);
         }
-        post.setContent(postDTO.getContent());
-        post.setPlace(optionalPlace.get());
+        if (postDTO.getContent() != null) {
+            post.setContent(postDTO.getContent());
+        }
+        if (postDTO.getPlaceId() != null) {
+            post.setPlace(optionalPlace.get());
+        }
+        if (postDTO.getImages() != null || postDTO.getImages().length != 0) {
+            //delete images
+            post.getImages().forEach(o -> {
+                storageService.delete(o.getUrl());
+            });
+            post.getImages().clear();
+            //upload new image
+            for (String image : postDTO.getImages()) {
+                String imageUrl = storageService.store(image);
+                post.getImages().add(new Image(imageUrl));
+            }
+        }
+        post.setUpdatedAt(LocalDateTime.now());
         postRepository.save(post);
         return new ResponseEntity(new SuccessfulResponse("success", post), HttpStatus.OK);
     }

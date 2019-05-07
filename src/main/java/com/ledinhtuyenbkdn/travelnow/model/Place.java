@@ -5,7 +5,6 @@ import org.neo4j.ogm.annotation.Id;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 
-import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -16,11 +15,8 @@ public class Place {
     @GeneratedValue
     private Long id;
 
-    @NotBlank
     private String namePlace;
     private String about;
-
-    @NotBlank
     private String address;
     private Double latitude;
     private Double longitude;
@@ -36,7 +32,7 @@ public class Place {
     public Place() {
     }
 
-    public Place(Long id, @NotBlank String namePlace, String about, @NotBlank String address, Double latitude, Double longitude, Set<Image> images, Province province, Category category, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public Place(Long id, String namePlace, String about, String address, Double latitude, Double longitude, Set<Image> images, Province province, Category category, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.namePlace = namePlace;
         this.about = about;
