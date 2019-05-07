@@ -89,6 +89,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, "/places/{id}").permitAll()
                 .antMatchers(HttpMethod.PUT, "/places/{id}").hasRole("ADMIN")
                 .antMatchers(HttpMethod.DELETE, "/places/{id}").hasRole("ADMIN")
+                //Rate crud
+                .antMatchers(HttpMethod.POST, "/places/{idPlace}/rates").hasRole("TOURIST")
+                .antMatchers(HttpMethod.GET, "/places/{idPlace}/rates").permitAll()
+                .antMatchers(HttpMethod.DELETE, "/places/{idPlace}/rates/{idRate}").hasRole("TOURIST")
                 //Comment place crud
                 .antMatchers(HttpMethod.POST, "/places/{idPlace}/comments").hasRole("TOURIST")
                 .antMatchers(HttpMethod.GET, "/places/{idPlace}/comments").permitAll()
@@ -103,7 +107,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 //Like crud
                 .antMatchers(HttpMethod.POST, "/posts/{postId}/likes").hasRole("TOURIST")
                 .antMatchers(HttpMethod.GET, "/posts/{postId}/likes").permitAll()
-                .antMatchers(HttpMethod.DELETE, "/posts/{postId}/likes/{likeId}").hasRole("TOURIST")
+                .antMatchers(HttpMethod.DELETE, "/posts/{postId}/likes").hasRole("TOURIST")
                 //Comment post crud
                 .antMatchers(HttpMethod.POST, "/posts/{postId}/comments").hasRole("TOURIST")
                 .antMatchers(HttpMethod.GET, "/posts/{postId}/comments").permitAll()

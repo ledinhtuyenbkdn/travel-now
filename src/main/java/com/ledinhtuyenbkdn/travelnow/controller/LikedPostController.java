@@ -43,7 +43,7 @@ public class LikedPostController {
         String username = authentication.getPrincipal().toString();
         Tourist tourist = touristRepository.findByUserName(username).get();
         //check if tourist has rated this place
-        if (likedPostRepository.findByPostIdAndTouristId(postId, tourist.getId()).size() > 0) {
+        if (!likedPostRepository.findByPostIdAndTouristId(postId, tourist.getId()).isPresent()) {
             Map<String, String> errors = new HashMap<>();
             errors.put("rate", "you have rated this place");
             return new ResponseEntity(new ErrorResponse("error", errors),
@@ -85,27 +85,20 @@ public class LikedPostController {
                 HttpStatus.OK);
     }
 
-    @DeleteMapping("/posts/{postId}/likes/{likeId}")
-    public ResponseEntity deleteLikedPost(@PathVariable("likeId") Long likeId,
+    @DeleteMapping("/posts/{postId}/likes")
+    public ResponseEntity deleteLikedPost(@PathVariable("postId") Long postId,
                                           Authentication authentication) {
-        Optional<LikedPost> optionalLikedPost = likedPostRepository.findById(likeId);
+        Tourist tourist = touristRepository.findByUserName(authentication.getPrincipal().toString()).get();
+        Optional<LikedPost> optionalLikedPost = likedPostRepository.findByPostIdAndTouristId(postId, tourist.getId());
         if (!optionalLikedPost.isPresent()) {
             Map<String, String> errors = new HashMap<>();
-            errors.put("id", "id like is not existed");
+            errors.put("id", "like is not existed");
             return new ResponseEntity(new ErrorResponse("error", errors),
                     HttpStatus.NOT_FOUND);
         }
         LikedPost likedPost = optionalLikedPost.get();
-        Tourist tourist = likedPost.getTourist();
-        if (authentication.getPrincipal().toString().equals(tourist.getUserName())) {
-            likedPostRepository.delete(likedPost);
-            return new ResponseEntity(new SuccessfulResponse("success", "deleted"),
-                    HttpStatus.OK);
-        } else {
-            Map<String, String> errors = new HashMap<>();
-            errors.put("authorization", "you aren't allowed to update this comment.");
-            return new ResponseEntity(new ErrorResponse("error", errors),
-                    HttpStatus.FORBIDDEN);
-        }
+        likedPostRepository.delete(likedPost);
+        return new ResponseEntity(new SuccessfulResponse("success", "deleted"),
+                HttpStatus.OK);
     }
 }
