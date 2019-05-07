@@ -83,9 +83,7 @@ public class PostController {
             post.put("tourist", o.getTourist());
             post.put("createdAt", o.getCreatedAt());
             post.put("updatedAt", o.getUpdatedAt());
-            post.put("likes", likedPostRepository.findByPostId(o.getId()).stream().map(o1 -> {
-                return o1.getTourist().getId();
-            }).toArray(size -> new Long[size]));
+            post.put("likes", likedPostRepository.findByPostId(o.getId()));
             responseJson.add(post);
         });
         //paginate

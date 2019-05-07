@@ -1,7 +1,6 @@
 package com.ledinhtuyenbkdn.travelnow.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ledinhtuyenbkdn.travelnow.model.Tourist;
 import com.ledinhtuyenbkdn.travelnow.repository.AdminRepository;
 import com.ledinhtuyenbkdn.travelnow.repository.TouristRepository;
 import com.ledinhtuyenbkdn.travelnow.repository.UserRepository;
@@ -47,17 +46,18 @@ public class TokenAuthenticationServiceImpl implements TokenAuthenticationServic
                 .signWith(SignatureAlgorithm.HS512, SECRET_KEY)
                 .compact();
         try {
+            response.setContentType("application/json;charset=UTF-8");
+            response.setCharacterEncoding("UTF-8");
             PrintWriter writer = response.getWriter();
-            response.setContentType("application/json");
             response.addHeader(HEADER_STRING, Jwt);
             ObjectMapper mapper = new ObjectMapper();
             String json = "";
             if (userRepository.findByUserName(username).get().getRole().equals("ROLE_TOURIST")) {
-                Tourist tourist = touristRepository.findByUserName(username).get();
-                json = mapper.writeValueAsString(tourist);
+                json = mapper.writeValueAsString(touristRepository.findByUserName(username).get());
             } else {
                 json = mapper.writeValueAsString(adminRepository.findByUserName(username).get());
             }
+
             writer.print(json);
             writer.flush();
         } catch (IOException e) {

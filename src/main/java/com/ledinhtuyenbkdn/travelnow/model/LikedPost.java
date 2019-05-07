@@ -1,5 +1,6 @@
 package com.ledinhtuyenbkdn.travelnow.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.neo4j.ogm.annotation.*;
 
 @RelationshipEntity(type = "LIKED_POST")
@@ -10,6 +11,7 @@ public class LikedPost {
     @StartNode
     private Tourist tourist;
     @EndNode
+    @JsonIgnore
     private Post post;
 
     public Long getId() {

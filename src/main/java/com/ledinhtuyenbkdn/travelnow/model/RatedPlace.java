@@ -1,9 +1,8 @@
 package com.ledinhtuyenbkdn.travelnow.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.validator.constraints.Range;
 import org.neo4j.ogm.annotation.*;
-
-import javax.validation.constraints.Size;
 
 @RelationshipEntity(type = "RATED_PLACE")
 public class RatedPlace {
@@ -16,6 +15,7 @@ public class RatedPlace {
     @StartNode
     private Tourist tourist;
     @EndNode
+    @JsonIgnore
     private Place place;
 
     public RatedPlace() {
