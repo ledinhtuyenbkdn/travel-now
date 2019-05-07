@@ -5,6 +5,7 @@ import com.ledinhtuyenbkdn.travelnow.repository.*;
 import com.ledinhtuyenbkdn.travelnow.response.ErrorResponse;
 import com.ledinhtuyenbkdn.travelnow.response.SuccessfulResponse;
 import com.ledinhtuyenbkdn.travelnow.service.StorageService;
+import org.springframework.beans.support.PagedListHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -69,7 +70,8 @@ public class PostController {
     }
 
     @GetMapping("/tourists/{touristId}/posts")
-    public ResponseEntity readAllPosts(@PathVariable("touristId") Long id) {
+    public ResponseEntity readAllPosts(@PathVariable("touristId") Long id,
+                                       @RequestParam(value = "page", defaultValue = "1") int page) {
         List<Post> posts = postRepository.findAllByTouristId(id);
         List<Map<String, Object>> responseJson = new ArrayList<>();
         posts.forEach(o -> {
@@ -86,7 +88,14 @@ public class PostController {
             }).toArray(size -> new Long[size]));
             responseJson.add(post);
         });
-        return new ResponseEntity(new SuccessfulResponse("success", responseJson), HttpStatus.OK);
+        //paginate
+        PagedListHolder pages = new PagedListHolder(responseJson);
+        pages.setPageSize(4); // number of items per page
+        pages.setPage(page - 1);
+
+        return new ResponseEntity(new SuccessfulResponse("success",
+                pages.getPageList()),
+                HttpStatus.OK);
     }
 
     @GetMapping("/posts/{postId}")

@@ -5,6 +5,7 @@ import com.ledinhtuyenbkdn.travelnow.repository.*;
 import com.ledinhtuyenbkdn.travelnow.response.ErrorResponse;
 import com.ledinhtuyenbkdn.travelnow.response.SuccessfulResponse;
 import com.ledinhtuyenbkdn.travelnow.service.StorageService;
+import org.springframework.beans.support.PagedListHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -76,16 +77,16 @@ public class PlaceController {
     public ResponseEntity getAllPlaces(@RequestParam(value = "s", defaultValue = "") String keyword,
                                        @RequestParam(value = "province", defaultValue = "") String province,
                                        @RequestParam(value = "category", defaultValue = "") String category,
-                                       @RequestParam(value = "page", defaultValue = "1") Long page) {
+                                       @RequestParam(value = "page", defaultValue = "1") int page) {
         List<Place> places = null;
         if ("".equals(province) && "".equals(category)) {
-            places = placeRepository.findAllByNamePlaceContains(keyword, page);
+            places = placeRepository.findAllByNamePlaceContains(keyword);
         } else if ("".equals(province)) {
-            places = placeRepository.findAllByNamePlaceContainsAndCategoryId(keyword, Long.parseLong(category), page);
+            places = placeRepository.findAllByNamePlaceContainsAndCategoryId(keyword, Long.parseLong(category));
         } else if ("".equals(category)) {
-            places = placeRepository.findAllByNamePlaceContainsAndProvinceId(keyword, Long.parseLong(province), page);
+            places = placeRepository.findAllByNamePlaceContainsAndProvinceId(keyword, Long.parseLong(province));
         } else {
-            places = placeRepository.findAllByNamePlaceContainsAndProvinceIdAndCategoryId(keyword, Long.parseLong(province), Long.parseLong(category), page);
+            places = placeRepository.findAllByNamePlaceContainsAndProvinceIdAndCategoryId(keyword, Long.parseLong(province), Long.parseLong(category));
         }
         List<Map<String, Object>> responseJson = new ArrayList<>();
         places.forEach(place -> {
@@ -96,7 +97,10 @@ public class PlaceController {
             Map<String, Object> json = serializePlace(place, averageStar);
             responseJson.add(json);
         });
-        return ResponseEntity.ok(responseJson);
+        PagedListHolder pages = new PagedListHolder(responseJson);
+        pages.setPageSize(8);
+        pages.setPage(page - 1);
+        return ResponseEntity.ok(pages.getPageList());
     }
 
     @GetMapping("/places/{id}")
