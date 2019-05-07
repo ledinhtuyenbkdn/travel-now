@@ -74,7 +74,13 @@ public class PostController {
         List<Map<String, Object>> responseJson = new ArrayList<>();
         posts.forEach(o -> {
             Map<String, Object> post = new LinkedHashMap<>();
-            post.put("post", o);
+            post.put("id", o.getId());
+            post.put("content", o.getContent());
+            post.put("images", o.getImages());
+            post.put("place", o.getPlace());
+            post.put("tourist", o.getTourist());
+            post.put("createdAt", o.getCreatedAt());
+            post.put("updatedAt", o.getUpdatedAt());
             post.put("likes", likedPostRepository.findByPostId(o.getId()).stream().map(o1 -> {
                 return o1.getTourist().getId();
             }).toArray(size -> new Long[size]));
