@@ -1,10 +1,7 @@
 package com.ledinhtuyenbkdn.travelnow.controller;
 
 import com.ledinhtuyenbkdn.travelnow.model.*;
-import com.ledinhtuyenbkdn.travelnow.repository.ImageRepository;
-import com.ledinhtuyenbkdn.travelnow.repository.PlaceRepository;
-import com.ledinhtuyenbkdn.travelnow.repository.PostRepository;
-import com.ledinhtuyenbkdn.travelnow.repository.TouristRepository;
+import com.ledinhtuyenbkdn.travelnow.repository.*;
 import com.ledinhtuyenbkdn.travelnow.response.ErrorResponse;
 import com.ledinhtuyenbkdn.travelnow.response.SuccessfulResponse;
 import com.ledinhtuyenbkdn.travelnow.service.StorageService;
@@ -26,16 +23,20 @@ public class PostController {
     private StorageService storageService;
     private TouristRepository touristRepository;
 
+    private LikedPostRepository likedPostRepository;
+
     public PostController(PostRepository postRepository,
                           PlaceRepository placeRepository,
                           ImageRepository imageRepository,
                           StorageService storageService,
-                          TouristRepository touristRepository) {
+                          TouristRepository touristRepository,
+                          LikedPostRepository likedPostRepository) {
         this.postRepository = postRepository;
         this.placeRepository = placeRepository;
         this.imageRepository = imageRepository;
         this.storageService = storageService;
         this.touristRepository = touristRepository;
+        this.likedPostRepository = likedPostRepository;
     }
 
     @PostMapping("/posts")
@@ -70,8 +71,16 @@ public class PostController {
     @GetMapping("/tourists/{touristId}/posts")
     public ResponseEntity readAllPosts(@PathVariable("touristId") Long id) {
         List<Post> posts = postRepository.findAllByTouristId(id);
-
-        return new ResponseEntity(new SuccessfulResponse("success", posts), HttpStatus.OK);
+        List<Map<String, Object>> responseJson = new ArrayList<>();
+        posts.forEach(o -> {
+            Map<String, Object> post = new LinkedHashMap<>();
+            post.put("post", o);
+            post.put("likes", likedPostRepository.findByPostId(o.getId()).stream().map(o1 -> {
+                return o1.getTourist().getId();
+            }).toArray(size -> new Long[size]));
+            responseJson.add(post);
+        });
+        return new ResponseEntity(new SuccessfulResponse("success", responseJson), HttpStatus.OK);
     }
 
     @GetMapping("/posts/{postId}")

@@ -58,7 +58,6 @@ public class TokenAuthenticationServiceImpl implements TokenAuthenticationServic
             } else {
                 json = mapper.writeValueAsString(adminRepository.findByUserName(username).get());
             }
-
             writer.print(json);
             writer.flush();
         } catch (IOException e) {
