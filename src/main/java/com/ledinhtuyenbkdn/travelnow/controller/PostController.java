@@ -91,8 +91,10 @@ public class PostController {
         pages.setPageSize(4); // number of items per page
         pages.setPage(page - 1);
 
+        List<Place> result = page > pages.getPageCount() ? new ArrayList<>() : pages.getPageList();
+
         return new ResponseEntity(new SuccessfulResponse("success",
-                pages.getPageList()),
+                result),
                 HttpStatus.OK);
     }
 

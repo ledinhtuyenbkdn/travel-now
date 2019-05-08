@@ -1,5 +1,6 @@
 package com.ledinhtuyenbkdn.travelnow.controller;
 
+import com.ledinhtuyenbkdn.travelnow.model.Place;
 import com.ledinhtuyenbkdn.travelnow.model.Post;
 import com.ledinhtuyenbkdn.travelnow.model.Tourist;
 import com.ledinhtuyenbkdn.travelnow.repository.LikedPostRepository;
@@ -51,8 +52,10 @@ public class NewsFeedController {
         pages.setPageSize(4); // number of items per page
         pages.setPage(page - 1);
 
+        List<Place> result = page > pages.getPageCount() ? new ArrayList<>() : pages.getPageList();
+
         return new ResponseEntity(new SuccessfulResponse("success",
-                pages.getPageList()),
+                result),
                 HttpStatus.OK);
     }
 }

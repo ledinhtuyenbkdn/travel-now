@@ -100,7 +100,8 @@ public class PlaceController {
         PagedListHolder pages = new PagedListHolder(responseJson);
         pages.setPageSize(8);
         pages.setPage(page - 1);
-        return ResponseEntity.ok(pages.getPageList());
+        List<Place> result = page > pages.getPageCount() ? new ArrayList<>() : pages.getPageList();
+        return ResponseEntity.ok(result);
     }
 
     @GetMapping("/places/{id}")
