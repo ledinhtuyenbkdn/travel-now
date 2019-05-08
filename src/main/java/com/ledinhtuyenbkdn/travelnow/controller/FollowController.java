@@ -84,10 +84,10 @@ public class FollowController {
             return new ResponseEntity(new ErrorResponse("error", errors),
                     HttpStatus.NOT_FOUND);
         }
-        List<Long> allFollowers = followRepository.findByFolloweeId(id)
-                .stream().map(o -> o.getFollower().getId()).collect(Collectors.toList());
-        List<Long> allFollowings = followRepository.findByFollowerId(id)
-                .stream().map(o -> o.getFollowee().getId()).collect(Collectors.toList());
+        List<Tourist> allFollowers = followRepository.findByFolloweeId(id)
+                .stream().map(o -> o.getFollower()).collect(Collectors.toList());
+        List<Tourist> allFollowings = followRepository.findByFollowerId(id)
+                .stream().map(o -> o.getFollowee()).collect(Collectors.toList());
         Map<String, Object> responseJson = new LinkedHashMap<>();
         responseJson.put("allFollowers", allFollowers);
         responseJson.put("allFollowings", allFollowings);
