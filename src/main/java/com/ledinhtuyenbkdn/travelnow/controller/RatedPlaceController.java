@@ -47,7 +47,7 @@ public class RatedPlaceController {
         String username = authentication.getPrincipal().toString();
         Tourist tourist = touristRepository.findByUserName(username).get();
         //check if tourist has rated this place
-        if (ratedPlaceRepository.findByPlaceIdAndTouristId(idPlace, tourist.getId()).size() > 0) {
+        if (ratedPlaceRepository.findByPlaceIdAndTouristId(idPlace, tourist.getId()).isPresent()) {
             Map<String, String> errors = new HashMap<>();
             errors.put("rate", "you have rated this place");
             return new ResponseEntity(new ErrorResponse("error", errors),

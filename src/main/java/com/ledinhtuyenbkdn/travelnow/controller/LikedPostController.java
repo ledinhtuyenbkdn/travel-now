@@ -36,16 +36,16 @@ public class LikedPostController {
         Optional<Post> optionalPost = postRepository.findById(postId);
         if (!optionalPost.isPresent()) {
             Map<String, String> errors = new HashMap<>();
-            errors.put("id", "id place is not existed");
+            errors.put("id", "id post is not existed");
             return new ResponseEntity(new ErrorResponse("error", errors),
                     HttpStatus.NOT_FOUND);
         }
         String username = authentication.getPrincipal().toString();
         Tourist tourist = touristRepository.findByUserName(username).get();
-        //check if tourist has rated this place
-        if (!likedPostRepository.findByPostIdAndTouristId(postId, tourist.getId()).isPresent()) {
+        //check if tourist has liked this post
+        if (likedPostRepository.findByPostIdAndTouristId(postId, tourist.getId()).isPresent()) {
             Map<String, String> errors = new HashMap<>();
-            errors.put("rate", "you have rated this place");
+            errors.put("like", "you have liked this post");
             return new ResponseEntity(new ErrorResponse("error", errors),
                     HttpStatus.BAD_REQUEST);
         }
@@ -68,7 +68,7 @@ public class LikedPostController {
         Optional<Post> optionalPost = postRepository.findById(postId);
         if (!optionalPost.isPresent()) {
             Map<String, String> errors = new HashMap<>();
-            errors.put("id", "id place is not existed");
+            errors.put("id", "id post is not existed");
             return new ResponseEntity(new ErrorResponse("error", errors),
                     HttpStatus.NOT_FOUND);
         }
