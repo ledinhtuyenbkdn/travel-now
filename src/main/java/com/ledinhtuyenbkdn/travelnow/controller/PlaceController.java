@@ -137,6 +137,24 @@ public class PlaceController {
         return ResponseEntity.ok(responseJson);
     }
 
+    @GetMapping("/top-places")
+    public ResponseEntity getTopPlaces() {
+        List<Place> allPlaces = placeRepository.findAllByNamePlaceContains("");
+        List<Map<String, Object>> responseJson = new ArrayList<>();
+        allPlaces.forEach(place -> {
+            List<RatedPlace> rates = ratedPlaceRepository.findByPlaceId(place.getId());
+            int numRates = rates.size();
+            int sumAllStars = rates.stream().reduce(0, (sum, rate) -> sum + rate.getNumberStar(), Integer::sum);
+            double averageStar = numRates == 0 ? 0 : sumAllStars * 1.0 / numRates;
+            Map<String, Object> json = serializePlace(place, averageStar);
+            responseJson.add(json);
+        });
+        responseJson.sort((o1, o2) -> {
+            return (int)(((double)o2.get("averageStar")) - ((double)o1.get("averageStar")));
+        });
+        return ResponseEntity.ok(responseJson.subList(0, 8));
+    }
+
     @PutMapping("/places/{id}")
     public ResponseEntity updatePlace(@PathVariable("id") Long id, @RequestBody PlaceDTO placeDTO) {
         Optional<Province> optionalProvince = provinceRepository.findById(Long.valueOf(placeDTO.getProvinceId()));
