@@ -20,10 +20,10 @@ public interface PlaceRepository extends Neo4jRepository<Place, Long> {
             "return r1,r2,r3,p,province,category, image;")
     List<Place> findAllByNamePlaceContains(String s);
 
-    @Query("match (p:Place)-[r1:IS_IN]->(province:Province), (p:Place)-[r2:IS_BELONGS_TO]->(category:Category), (p:Place)-[r3:HAS_IMAGE]->(image:Image) where ID(category)={0} return r1,r2,r3,p,province,category;")
+    @Query("match (p:Place)-[r1:IS_IN]->(province:Province), (p:Place)-[r2:IS_BELONGS_TO]->(category:Category), (p:Place)-[r3:HAS_IMAGE]->(image:Image) where ID(category)={0} return r1,r2,r3,p,province,category, image;")
     List<Place> findAllByCategoryId(Long id);
 
-    @Query("match (p:Place)-[r1:IS_IN]->(province:Province), (p:Place)-[r2:IS_BELONGS_TO]->(category:Category), (p:Place)-[r3:HAS_IMAGE]->(image:Image) where ID(province)={0} return r1,r2,r3,p,province,category;")
+    @Query("match (p:Place)-[r1:IS_IN]->(province:Province), (p:Place)-[r2:IS_BELONGS_TO]->(category:Category), (p:Place)-[r3:HAS_IMAGE]->(image:Image) where ID(province)={0} return r1,r2,r3,p,province,category, image;")
     List<Place> findAllByProvinceId(Long id);
 
     @Query("match (p:Place)-[r2:IS_BELONGS_TO]->(category:Category)\n" +
@@ -46,7 +46,7 @@ public interface PlaceRepository extends Neo4jRepository<Place, Long> {
 
     @Query("match (p:Place)-[r1:IS_IN]->(province:Province), \n" +
             "(p:Place)-[r2:IS_BELONGS_TO]->(category:Category)\n" +
-            "where lower(p.namePlace) contains lower(\"\") and ID(province)=279 and ID(category)=0\n" +
+            "where lower(p.namePlace) contains lower({0}) and ID(province)={1} and ID(category)={2}\n" +
             "with p, r1, r2, province, category\n" +
             "order by p.createdAt desc\n" +
             "OPTIONAL MATCH (p:Place)-[r3:HAS_IMAGE]->(image:Image) \n" +
