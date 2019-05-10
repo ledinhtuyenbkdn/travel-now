@@ -138,7 +138,7 @@ public class PostController {
         if (postDTO.getPlaceId() != null) {
             post.setPlace(optionalPlace.get());
         }
-        if (postDTO.getImages() != null || postDTO.getImages().length != 0) {
+        if (postDTO.getImages() != null && postDTO.getImages().length != 0) {
             //delete images
             post.getImages().forEach(o -> {
                 storageService.delete(o.getUrl());

@@ -180,7 +180,7 @@ public class PlaceController {
         if (placeDTO.getCategoryId() != null) {
             place.setCategory(optionalCategory.get());
         }
-        if (placeDTO.getImages() != null || placeDTO.getImages().length != 0) {
+        if (placeDTO.getImages() != null && placeDTO.getImages().length != 0) {
             //delete images
             place.getImages().forEach(o -> {
                 storageService.delete(o.getUrl());
